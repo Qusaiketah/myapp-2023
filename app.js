@@ -6,23 +6,15 @@ const app = express() // creates the Express application
 const sqlite3 = require('sqlite3')
 const db = new sqlite3.Database('projects-jl3.db')
 
-// defines handlebars engine
 app.engine('handlebars', engine());
-// defines the view engine to be handlebars
 app.set('view engine', 'handlebars');
-// defines the views directory
 app.set('views', './views');
-
-// define static directory "public" to access css/ and img/
 app.use(express.static('public'))
 
-// MODEL (DATA)
-const humans = [
-    {"id": "0", "name": "Jerome"}, 
-    {"id": "1", "name": "Mira"},
-    {"id": "2", "name": "Linus"}, 
-    {"id": "3", "name": "Susanne"}, 
-    {"id": "4", "name": "Jasmin"}, 
+const skillsData = [
+    {SkillName:"UI/UX", SkillDescription:"Designing web/app interfaces"}, 
+    {SkillName:"UI/UX", SkillDescription:"Designing web/app interfaces"}, 
+    {SkillName:"UI/UX", SkillDescription:"Designing web/app interfaces"}, 
 ]
 
 app.get('/', function(request, response){
@@ -80,18 +72,14 @@ app.get('/portfolio', function(request, response){
 })
 
 
-// defines the final default route 404 NOT FOUND
 app.use(function(req,res){
   res.status(404).render('404.handlebars');
 });
 
-// runs the app and listens to the port
 app.listen(port, () => {
     console.log(`Server running and listening on port ${port}...`)
 })
 
-
-// Define a route for the login page
 app.get('/login', function(request, response){
-  response.render('Login.handlebars'); // Render the login.handlebars template
+  response.render('Login.handlebars'); 
 })
