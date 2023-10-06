@@ -16,7 +16,7 @@
 
                 <div class="tab-contents active-tab" id="skills">
                     <ul>
-                        {{#each skills}}
+                        {{#each skillsData}}
                             <li><span>{{this.title}}</span><br>{{this.description}}</li>
                         {{/each}}
                     </ul>
@@ -24,7 +24,7 @@
 
                 <div class="tab-contents" id="experience">
                     <ul>
-                        {{#each experience}}
+                        {{#each experienceData}}
                             <li><span>{{this.year}}</span><br>{{this.company}}</li>
                         {{/each}}
                     </ul>
@@ -32,7 +32,7 @@
 
                 <div class="tab-contents" id="education">
                     <ul>
-                        {{#each education}}
+                        {{#each educationData}}
                             <li><span>{{this.year}}</span><br>{{this.institution}}</li>
                         {{/each}}
                     </ul>
