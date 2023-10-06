@@ -34,6 +34,31 @@ skillsData.forEach((skill) => {
 
 
 
+/*-------------------------EXPERIENCE-TABLE--------------------- */
+db.run(`CREATE TABLE IF NOT EXISTS Skills (
+  experienceID INTEGER PRIMARY KEY,
+  Year TEXT NOT NULL,
+  Company TEXT NOT NULL
+)`);
+
+const experienceData = [
+  {Year:"2020", Company:"Scarface Group"}, 
+  {Year:"2021", Company:"Dajjal Interface"}, 
+  {Year:"2022", Company:"Internship at cambridge hell Academy"}, 
+]
+
+experienceData.forEach((exp) => {
+db.run("INSERT INTO Experience (Year,Company) VALUES(?,?)",
+       [exp.Year,exp.Company]);
+});
+
+
+/*-------------------------EXPERIENCE-TABLE--------------------- */
+
+
+
+
+
 
 app.get('/', function(request, response){
   response.render('home.handlebars')
