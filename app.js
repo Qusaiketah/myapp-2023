@@ -11,18 +11,36 @@ app.set('view engine', 'handlebars');
 app.set('views', './views');
 app.use(express.static('public'))
 
+/*-------------------------SKILLS-TABLE--------------------- */
+
+db.run(`CREATE TABLE IF NOT EXISTS Skills (
+    SkillID INTEGER PRIMARY KEY,
+    SkillName TEXT NOT NULL,
+    SkillDescription TEXT NOT NULL
+)`);
+
 const skillsData = [
     {SkillName:"UI/UX", SkillDescription:"Designing web/app interfaces"}, 
     {SkillName:"UI/UX", SkillDescription:"Designing web/app interfaces"}, 
     {SkillName:"UI/UX", SkillDescription:"Designing web/app interfaces"}, 
 ]
 
+skillsData.forEach((skill) => {
+  db.run("INSERT INTO Skills (SkillName,SkillDescription) VALUES(?,?)",
+         [skill.SkillName,skill.SkillDescription]);
+  });
+
+/*-------------------------SKILLS-TABLE--------------------- */
+
+
+
+
 app.get('/', function(request, response){
   response.render('home.handlebars')
 })
 
 
-app.get('/about', function(request, response){
+/*app.get('/about', function(request, response){
   const model = {
     skills: [
       {"title": "UI/UX", "description": "Designing web/app interfaces"},
@@ -43,7 +61,7 @@ app.get('/about', function(request, response){
   response.render('about.handlebars', model);
 });
 
-
+*/
 
 app.get('/login', function(request, response){
   const model = humans[1] 
