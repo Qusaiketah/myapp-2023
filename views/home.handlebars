@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles-jl.css">
+    <script src="script.js"></script>
+    <title>Personal Portfolio Website</title>
+</head>
+<body>
+    <img class="background" src="/img/koko.jpeg" alt="">
+    <div id="header">
+        <div class="header-text">
+            <p>Web-Designer</p>
+            <h1>Hi, I'm <span>Qusai Ketah</span> <br>from Palestine</h1>
+        </div>
+    </div>
+    <script>
+        // Get a reference to the "Login" button
+        const loginButton = document.getElementById("btnLogin");
+
+        // Add a click event listener to the button
+        loginButton.addEventListener("click", function() {
+            // Redirect the user to the login page (assuming "login.handlebars" is the route)
+            window.location.href = "/Login.handlebars"; // Update the URL as needed
+        });
+    </script>
+
+</body>
+</html>

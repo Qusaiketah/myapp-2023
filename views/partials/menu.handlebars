@@ -1,0 +1,29 @@
+
+
+<div id="headers">
+    <input type="checkbox" id="check">
+    <label for="check" class="icons">
+        <i class='bx bx-menu' id="menu-icon" ></i>
+        <i class='bx bx-x' id="close-icon" ></i>
+    </label>
+    <div class="navbar">
+        <nav>
+            <ul>
+                <li><a href="/" style="--i:0" >Home</a></li>
+                <li><a href="/about" style="--i:1">About</a></li>
+                <li><a href="/services" style="--i:2">Services</a></li>
+                <li><a href="/portfolio" style="--i:3">Portfolio</a></li>
+                <li><a href="#" style="--i:4">Contact</a></li>
+                <li><button id="btnLogin" class="btnLogin-popup"  style="--i:5">Login</button></li>
+
+            <script>
+              const loginButton = document.getElementById("btnLogin");
+              loginButton.addEventListener("click", function() {
+              window.location.href = "/login"; 
+           });
+            </script> 
+
+            </ul>
+        </nav>
+    </div>
+</div>
