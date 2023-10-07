@@ -22,15 +22,24 @@ db.run(`CREATE TABLE IF NOT EXISTS Skills (
 )`);
 
 const skillsData = [
-    {SkillName:"UI/UX", SkillDescription:"Designing web/app interfaces"}, 
-    {SkillName:"UI/UX", SkillDescription:"Designing web/app interfaces"}, 
-    {SkillName:"UI/UX", SkillDescription:"Designing web/app interfaces"}, 
-]
+  { SkillName: "UI/UX", SkillDescription: "Designing web/app interfaces" },
+  { SkillName: "Web Development", SkillDescription: "Developing web applications" },
+  { SkillName: "Mobile App Development", SkillDescription: "Building Android/iOS apps" },
+];
 
 skillsData.forEach((skill) => {
-  db.run("INSERT INTO Skills (SkillName,SkillDescription) VALUES(?,?)",
-         [skill.SkillName,skill.SkillDescription]);
-  });
+  db.run(
+    "INSERT INTO Skills (SkillName, SkillDescription) VALUES (?, ?)",
+    [skill.SkillName, skill.SkillDescription],
+    (insertError) => {
+      if (insertError) {
+        console.error("Error inserting data into skills table: ", insertError);
+      } else {
+        console.log("Data inserted into skills table");
+      }
+    }
+  );
+});
 
 /*-------------------------SKILLS-TABLE--------------------- */
 
@@ -85,8 +94,17 @@ const educationData = [
 
 educationData.forEach((edu)=>{
   db.run("INSERT INTO Education(Year,Institution) VALUES(?,?)", 
-  [exp.Year,exp.Institution]);
+  [edu.Year,edu.Institution],
+   (insertError) =>{
+    if(insertError){
+      console.error("error inserting data inte exp table ")
+    } else {
+      console.log("Data inserted into exp table")
+    }
+   });
 });
+
+
 
 db.close((error)=>{
   if(error){
@@ -97,14 +115,32 @@ db.close((error)=>{
 
 
 
-
-
-
 /*-------------------------EDUCATION-TABLE--------------------- */
 
 app.get('/', function(request, response){
   response.render('home.handlebars')
 })
+
+
+
+
+
+app.get('/about', function(request, response){
+  const data ={
+    skillsData:skillsData,
+    experienceData:experienceData,
+    educationData:educationData
+  }; 
+  response.render('about.handlebars', data);
+
+
+});
+
+
+
+
+
+
 
 
 /*app.get('/about', function(request, response){
