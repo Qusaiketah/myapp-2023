@@ -160,7 +160,7 @@ const{
   webDesignContent,
   webDesignLink,
   uiUxDesignTitle,
-  uiUxDesignConten,
+  uiUxDesignContent,
   uiUxDesignLink,
   appDesignTitle,
   appDesignContent,
@@ -192,14 +192,46 @@ db.run(
 
 
 
-/*-------------------------Web-Design-tables--------------------*/
+/*-------------------------UI/UX-Design-tables--------------------*/
+
+db.run(`CREATE TABLE IF NOT EXISTS UIUXDesign (
+  UIUXdesignID INTEGER PRIMARY KEY,
+  Title TEXT NOT NULL,
+  Content TEXT NOT NULL,
+  Link TEXT NOT NULL
+)`);
+
+db.run(
+  "INSERT INTO WebDesign(Title,Content,Link) VALUES(?,?,?)",
+  [uiUxDesignContent,uiUxDesignLink,uiUxDesignLink],
+  (insertError) => {
+    if(insertError){
+      console.error("Error inserting data into UIUXDesign table;",insertError); 
+    }else{
+      console.log("Data inserted into UIUXDesign table");
+    }
+  });
+
+/*-------------------------App-Design-tables--------------------*/
 
 
+db.run(`CREATE TABLE IF NOT EXISTS AppDesign (
+  UIUXdesignID INTEGER PRIMARY KEY,
+  Title TEXT NOT NULL,
+  Content TEXT NOT NULL,
+  Link TEXT NOT NULL
+)`);
 
-
-
-
-
+db.run(
+  "INSERT INTO WebDesign(Title,Content,Link) VALUES(?,?,?)",
+  [uiUxDesignContent,uiUxDesignLink,uiUxDesignLink],
+  (insertError) => {
+    if(insertError){
+      console.error("Error inserting data into UIUXDesign table;",insertError); 
+    }else{
+      console.log("Data inserted into UIUXDesign table");
+    }
+  });
 
 
 
