@@ -106,16 +106,22 @@ educationData.forEach((edu)=>{
 
 
 
-db.close((error)=>{
-  if(error){
-    return console.error(error.massage);
-  } console.log('Database connection closed')
-});
-
-
-
 
 /*-------------------------EDUCATION-TABLE--------------------- */
+
+const model = {
+  webDesignTitle: "Web-Design",
+  webDesignContent: "Web design refers to the craft of giving a website a basic graphic design that is usually guided by markup language. This includes determining the sizes and placement of surfaces, typography, color scales, manner or style of images, icons, logos and other graphic elements...",
+  webDesignLink: "https://sv.wikipedia.org/wiki/Webbdesign",
+  uiUxDesignTitle: "UI/UX Design",
+  uiUxDesignContent: "User interface (UI) design or user interface engineering is the design of user interfaces for machines and software, such as computers, home appliances, mobile devices, and other electronic devices, with the focus on maximizing usability and the user experience...",
+  uiUxDesignLink: "https://en.wikipedia.org/wiki/User_interface_design",
+  appDesignTitle: "App Design",
+  appDesignContent: "Mobile app development is the act or process by which a mobile app is developed for one or more mobile devices, which can include personal digital assistants (PDA), enterprise digital assistants (EDA), or mobile phones.[1] Such software applications are specifically designed to run on mobile devices, taking numerous hardware constraints into consideration...",
+  appDesignLink: "https://en.wikipedia.org/wiki/Mobile_app_development"
+};
+
+
 
 app.get('/', function(request, response){
   response.render('home.handlebars')
@@ -140,34 +146,6 @@ app.get('/login', function(request, response){
 })
 
 /*-------------------------services-tables--------------------*/
-app.get('/services', function(request, response){
-  const model = {
-    webDesignTitle: "Web-Design",
-    webDesignContent: "Web design refers to the craft of giving a website a basic graphic design that is usually guided by markup language. This includes determining the sizes and placement of surfaces, typography, color scales, manner or style of images, icons, logos and other graphic elements...",
-    webDesignLink: "https://sv.wikipedia.org/wiki/Webbdesign",
-    uiUxDesignTitle: "UI/UX Design",
-    uiUxDesignContent: "User interface (UI) design or user interface engineering is the design of user interfaces for machines and software, such as computers, home appliances, mobile devices, and other electronic devices, with the focus on maximizing usability and the user experience...",
-    uiUxDesignLink: "https://en.wikipedia.org/wiki/User_interface_design",
-    appDesignTitle: "App Design",
-    appDesignContent: "Mobile app development is the act or process by which a mobile app is developed for one or more mobile devices, which can include personal digital assistants (PDA), enterprise digital assistants (EDA), or mobile phones.[1] Such software applications are specifically designed to run on mobile devices, taking numerous hardware constraints into consideration...",
-    appDesignLink: "https://en.wikipedia.org/wiki/Mobile_app_development"
-  };
-  response.render('services.handlebars', model);
-});
-
-const{
-  webDesignTitle,
-  webDesignContent,
-  webDesignLink,
-  uiUxDesignTitle,
-  uiUxDesignContent,
-  uiUxDesignLink,
-  appDesignTitle,
-  appDesignContent,
-  appDesignLink,
-}=model;
-
-
 
 /*-------------------------Wed-Design-tables--------------------*/
 db.run(`CREATE TABLE IF NOT EXISTS WebDesign (
@@ -180,7 +158,7 @@ db.run(`CREATE TABLE IF NOT EXISTS WebDesign (
 
 db.run(
   "INSERT INTO WebDesign(Title,Content,Link) VALUES(?,?,?)",
-  [webDesignTitle,webDesignContent,webDesignLink],
+  [model.webDesignTitle,model.webDesignContent,model.webDesignLink],
   (insertError) => {
     if(insertError){
       console.error("Error inserting data into WebDesign table;",insertError); 
@@ -202,8 +180,8 @@ db.run(`CREATE TABLE IF NOT EXISTS UIUXDesign (
 )`);
 
 db.run(
-  "INSERT INTO WebDesign(Title,Content,Link) VALUES(?,?,?)",
-  [uiUxDesignContent,uiUxDesignLink,uiUxDesignLink],
+  "INSERT INTO UIUXDesign(Title,Content,Link) VALUES(?,?,?)",
+  [model.uiUxDesignContent,model.uiUxDesignLink,model.uiUxDesignLink],
   (insertError) => {
     if(insertError){
       console.error("Error inserting data into UIUXDesign table;",insertError); 
@@ -223,8 +201,8 @@ db.run(`CREATE TABLE IF NOT EXISTS AppDesign (
 )`);
 
 db.run(
-  "INSERT INTO WebDesign(Title,Content,Link) VALUES(?,?,?)",
-  [uiUxDesignContent,uiUxDesignLink,uiUxDesignLink],
+  "INSERT INTO AppDesign(Title,Content,Link) VALUES(?,?,?)",
+  [model.appDesignTitle,model.appDesignContent,model.appDesignTitle],
   (insertError) => {
     if(insertError){
       console.error("Error inserting data into UIUXDesign table;",insertError); 
@@ -234,8 +212,18 @@ db.run(
   });
 
 
-
-
+  db.close((error)=>{
+    if(error){
+      return console.error(error.massage);
+    } console.log('Database connection closed')
+  });
+  
+  
+  app.get('/services', function(request, response){
+    response.render('services.handlebars', model);
+    
+    });
+    
 
 
 
