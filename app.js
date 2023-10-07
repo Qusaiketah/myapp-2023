@@ -97,9 +97,9 @@ educationData.forEach((edu)=>{
   [edu.Year,edu.Institution],
    (insertError) =>{
     if(insertError){
-      console.error("error inserting data inte exp table ")
+      console.error("error inserting data inte edu table ")
     } else {
-      console.log("Data inserted into exp table")
+      console.log("Data inserted into edu table")
     }
    });
 });
@@ -122,9 +122,6 @@ app.get('/', function(request, response){
 })
 
 
-
-
-
 app.get('/about', function(request, response){
   const data ={
     skillsData:skillsData,
@@ -133,45 +130,16 @@ app.get('/about', function(request, response){
   }; 
   response.render('about.handlebars', data);
 
-
 });
 
 
 
-
-
-
-
-
-/*app.get('/about', function(request, response){
-  const model = {
-    skills: [
-      {"title": "UI/UX", "description": "Designing web/app interfaces"},
-      {"title": "Web Development", "description": "Web/app Development"},
-      {"title": "Mobile App Development", "description": "Building Android/iOS apps"}
-    ],
-    experience: [
-      {"year": "2020", "company": "Scarface Group"},
-      {"year": "2021", "company": "Dajjal Interface"},
-      {"year": "2022", "company": "Internship at Hell Academy"}
-    ],
-    education: [
-      {"year": "2022", "institution": "UI/UX at Scarface Group"},
-      {"year": "2025", "institution": "MBA at Interface"},
-      {"year": "2024", "institution": "BBA at ISM Bangalore"}
-    ]
-  };
-  response.render('about.handlebars', model);
-});
-
-*/
 
 app.get('/login', function(request, response){
-  const model = humans[1] 
   response.render('Login.handlebars', {})
 })
 
-
+/*-------------------------services-tables--------------------*/
 app.get('/services', function(request, response){
   const model = {
     webDesignTitle: "Web-Design",
@@ -187,6 +155,59 @@ app.get('/services', function(request, response){
   response.render('services.handlebars', model);
 });
 
+const{
+  webDesignTitle,
+  webDesignContent,
+  webDesignLink,
+  uiUxDesignTitle,
+  uiUxDesignConten,
+  uiUxDesignLink,
+  appDesignTitle,
+  appDesignContent,
+  appDesignLink,
+}=model;
+
+
+
+/*-------------------------Wed-Design-tables--------------------*/
+db.run(`CREATE TABLE IF NOT EXISTS WebDesign (
+  WebdesignID INTEGER PRIMARY KEY,
+  Title TEXT NOT NULL,
+  Content TEXT NOT NULL,
+  Link TEXT NOT NULL
+)`);
+
+
+db.run(
+  "INSERT INTO WebDesign(Title,Content,Link) VALUES(?,?,?)",
+  [webDesignTitle,webDesignContent,webDesignLink],
+  (insertError) => {
+    if(insertError){
+      console.error("Error inserting data into WebDesign table;",insertError); 
+    }else{
+      console.log("Data inserted into WebDesign table");
+    }
+  });
+
+
+
+
+/*-------------------------Web-Design-tables--------------------*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*-------------------------services-tables--------------------*/
 
 app.get('/portfolio', function(request, response){
   response.render('portfolio.handlebars')
