@@ -70,11 +70,37 @@ db.run("INSERT INTO Experience (Year,Company) VALUES(?,?)",
 
 
 /*-------------------------EXPERIENCE-TABLE--------------------- */
+/*-------------------------EDUCATION-TABLE--------------------- */
+db.run(`CREATE TABLE IF NOT EXISTS Education (
+  EducationID INTEGER PRIMARY KEY,
+  Year TEXT NOT NULL,
+  Institution TEXT NOT NULL
+)`);
+
+const educationData = [
+  {Year:"2022", Institution:"UI/UX scarface"}, 
+  {Year:"2025", Institution:"MBA at Interface"}, 
+  {Year:"2024", Institution:"BBA at ISM Bangalore"}, 
+]
+
+educationData.forEach((edu)=>{
+  db.run("INSERT INTO Education(Year,Institution) VALUES(?,?)", 
+  [exp.Year,exp.Institution]);
+});
+
+db.close((error)=>{
+  if(error){
+    return console.error(error.massage);
+  } console.log('Database connection closed')
+});
 
 
 
 
 
+
+
+/*-------------------------EDUCATION-TABLE--------------------- */
 
 app.get('/', function(request, response){
   response.render('home.handlebars')
