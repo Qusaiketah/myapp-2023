@@ -1,3 +1,5 @@
+
+const { error } = require('console');
 const express = require('express') // loads the express package
 const { engine } = require('express-handlebars'); // loads handlebars for Express
 const port = 8081 // defines the port
@@ -35,11 +37,16 @@ skillsData.forEach((skill) => {
 
 
 /*-------------------------EXPERIENCE-TABLE--------------------- */
-db.run(`CREATE TABLE IF NOT EXISTS Skills (
-  experienceID INTEGER PRIMARY KEY,
+db.run(`CREATE TABLE IF NOT EXISTS Experience (
+  ExperienceID INTEGER PRIMARY KEY,
   Year TEXT NOT NULL,
   Company TEXT NOT NULL
-)`);
+)`, error =>{
+  if(error){
+    console.error("Error creating table")
+  } else{
+  console.log("experience table created")}
+});
 
 const experienceData = [
   {Year:"2020", Company:"Scarface Group"}, 
@@ -49,7 +56,16 @@ const experienceData = [
 
 experienceData.forEach((exp) => {
 db.run("INSERT INTO Experience (Year,Company) VALUES(?,?)",
-       [exp.Year,exp.Company]);
+       [exp.Year,exp.Company], (insertError) =>{
+        if(insertError){
+          console.error("error inserting data inte exp table ")
+        } else {
+          console.log("Data inserted into exp table")
+        }
+       }
+       
+       
+       );
 });
 
 
