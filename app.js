@@ -5,13 +5,10 @@ const { engine } = require('express-handlebars'); // loads handlebars for Expres
 const port = 8081 // defines the port
 const app = express() // creates the Express application
 const session = require ('express-session')
-const connectSqlite3 = require ('connect-sqlite3')(session)
 const cookieParser = require ('cookie-parser')
-
+const SQLiteStore = require('connect-sqlite3')(session);
 app.use(express.urlencoded({ extended: true }));
 
-
-const SQLiteStore = connectSqlite3(session)
 
 const sqlite3 = require('sqlite3')
 const db = new sqlite3.Database('projects-jl3.db')
@@ -21,6 +18,12 @@ app.set('view engine', 'handlebars');
 app.set('views', './views');
 app.use(express.static('public'))
 
+app.use(session({
+  store:new SQLiteStore({db:'session-db.db'}),
+  secret:'thisissecret',
+  saveUninitialized:false,
+  resave:false,
+}));
 /*-------------------------Login-Logout-TABLE--------------------- */
 
 app.get('/login', function(request, response){
