@@ -236,7 +236,7 @@ const portfolio = [
 
 portfolio.forEach( (oneProject) => {
 db.run(
-  "INSERT INTO portfolio(pid,pname,pyear,pdesc,ptype,pimgURL) VALUES(?,?,?,?,?,?)",[oneProject.id, oneProject.name,
+  "INSERT INTO portfolio(pname,pyear,pdesc,ptype,pimgURL) VALUES(?,?,?,?,?)",[oneProject.name,
     oneProject.year, oneProject.desc, oneProject.type, oneProject.url], (error) => {
     if (error) {
     console.log("ERROR: ", error)
