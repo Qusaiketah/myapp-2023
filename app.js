@@ -8,6 +8,9 @@ const session = require ('express-session')
 const connectSqlite3 = require ('connect-sqlite3')(session)
 const cookieParser = require ('cookie-parser')
 
+app.use(express.urlencoded({ extended: true }));
+
+
 const SQLiteStore = connectSqlite3(session)
 
 const sqlite3 = require('sqlite3')
@@ -28,7 +31,7 @@ app.post('/login', (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   
-  if ( username === 'your_username' && password === 'your_password'){
+  if ( isValidUser (username,password)){
     req.session.isAdmin=true;
     req.session.isLoggedIN = true;
     req.session.username = username;
@@ -39,10 +42,14 @@ app.post('/login', (req, res) => {
     req.session.isLoggedIN = false;
     req.session.isAdmin=false;
     req.session.username = "";
-    res.redirect ('/Login');
+    res.redirect ('/login');
   }
 
 });
+
+function isValidUser(username,password){
+  return username === 'Qusai22' && password ==='223'
+}
 
 
 app.get('Logout',(req,res)=>{
