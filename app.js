@@ -21,13 +21,39 @@ app.use(express.static('public'))
 /*-------------------------Login-Logout-TABLE--------------------- */
 
 app.get('/login', function(request, response){
-  response.render('Login.handlebars', {})
-})
+  response.render('Login.handlebars',model)
+});
 
-app.post('/login', (request, response)) =>{
+app.post('/login', (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
-}
+  
+  if ( username === 'your_username' && password === 'your_password'){
+    req.session.isAdmin=true;
+    req.session.isLoggedIN = true;
+    req.session.username = username;
+    res.redirect ('/');
+
+  } else {
+    console.log('Wrong username/password, Try again please!')
+    req.session.isLoggedIN = false;
+    req.session.isAdmin=false;
+    req.session.username = "";
+    res.redirect ('/Login');
+  }
+
+});
+
+
+app.get('Logout',(req,res)=>{
+  req.session.isLoggedIN = false;
+    req.session.isAdmin=false;
+    req.session.username = "";
+    res.redirect('/');
+    const model = {}
+    res.render('Logout.handlebars',model);
+  });
+
 
 
 
