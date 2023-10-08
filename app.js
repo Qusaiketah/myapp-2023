@@ -212,27 +212,66 @@ db.run(
   });
 
 
-  db.close((error)=>{
-    if(error){
-      return console.error(error.massage);
-    } console.log('Database connection closed')
+/*-------------------------services-tables--------------------*/
+/*-------------------------portfolio-tables--------------------*/
+
+db.run(`CREATE TABLE IF NOT EXISTS portfolio (
+  pid INTEGER PRIMARY KEY,
+  pname TEXT NOT NULL,
+  pyear INTEGER NOT NULL,
+  pdesc TEXT NOT NULL,
+  ptype TEXT NOT NULL,
+  pimgURL TEXT NOT NULL
+)`);
+
+const portfolio = [
+  {"pid":"1","name":"Automated Inventory management system","type":"business","desc":"this project aims to streamline inventory","year":2021, "dev":"Node.js","url":"/img/inventory.png" },
+  {"pid":"2","name":"Smart home automation","type":"technology","desc":"this project aims create smart home system","year":2022, "dev":"Node.js","url":"/img/smart_home.png" },
+  {"pid":"3","name":"E-learning platform","type":"education","desc":"this project aims teach new languages","year":2022, "dev":"Node.js","url":"/img/language_learning.png" },
+  {"pid":"4","name":"Medical imaging","type":"business","desc":"this project focusing on smart medical solutions","year":2023, "dev":"Node.js","url":"/img/medical_ai.png" },
+  {"pid":"5","name":"Eco-friendly app","type":"business","desc":"this project focuses on promoting eco friendly systems","year":2023, "dev":"Node.js","url":"/img/ecofriendly_transport.png" },
+
+];
+
+
+portfolio.forEach( (oneProject) => {
+db.run(
+  "INSERT INTO portfolio(pid,pname,pyear,pdesc,ptype,pimgURL) VALUES(?,?,?,?,?,?)",[oneProject.id, oneProject.name,
+    oneProject.year, oneProject.desc, oneProject.type, oneProject.url], (error) => {
+    if (error) {
+    console.log("ERROR: ", error)
+    } else {
+    console.log("Line added into the portfolio table!")
+  }
+});
+});
+
+/*-------------------------portfolio-tables--------------------*/
+
+
+
+
+
+app.get('/services', function(request, response){
+  response.render('services.handlebars', model);
+  
   });
   
-  
-  app.get('/services', function(request, response){
-    response.render('services.handlebars', model);
-    
+
+
+
+
+
+  app.get('/portfolio', function(request, response){
+    db.all("SELECT * FROM portfolio", (error, portfolioData) => {
+      if (error) {
+        response.render('portfolio.handlebars', { dbError: true, theError: error.message });
+      } else {
+        response.render('portfolio.handlebars', { dbError: false, portfolio: portfolioData });
+      }
     });
-    
-
-
-
-/*-------------------------services-tables--------------------*/
-
-app.get('/portfolio', function(request, response){
-  response.render('portfolio.handlebars')
-})
-
+  });
+  
 
 app.use(function(req,res){
   res.status(404).render('404.handlebars');
