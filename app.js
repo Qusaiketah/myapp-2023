@@ -51,7 +51,8 @@ app.post('/login', (req, res) => {
 });
 
 function isValidUser(username,password){
-  return username === 'Qusai22' && password ==='223'
+  return username === 'Qusai22' && password ==='223',username === 'jerome' && password ==='bäst'
+
 }
 
 
@@ -187,6 +188,7 @@ const model = {
 
 app.get('/', function(request, response){
   response.render('home.handlebars')
+  
 })
 
 
