@@ -6,8 +6,16 @@ const port = 8081 // defines the port
 const app = express() // creates the Express application
 const session = require ('express-session')
 const cookieParser = require ('cookie-parser')
-const SQLiteStore = require('connect-sqlite3')(session);
+const connectSqlite3 = require('connect-sqlite3');
 app.use(express.urlencoded({ extended: true }));
+const bodyParser = require ('body-parser')
+const SQLiteStore = require('connect-sqlite3')(session);
+
+app.use(bodyParser.urlencoded({extended:false}))
+app.use(bodyParser.json())
+
+
+
 
 
 const sqlite3 = require('sqlite3')
@@ -17,6 +25,8 @@ app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 app.use(express.static('public'))
+
+
 
 app.use(session({
   store:new SQLiteStore({db:'session-db.db'}),
@@ -57,7 +67,7 @@ function isValidUser(username,password){
 }
 
 
-app.get('Logout',(req,res)=>{
+app.get('/Logout',(req,res)=>{
   req.session.isLoggedIN = false;
     req.session.isAdmin=false;
     req.session.username = "";
@@ -187,7 +197,7 @@ const model = {
 
 
 
-app.get('/', function(request, response){
+app.get('/', function(req, response){
   console.log("SESSION:",req.session)
   const data ={
     skillsData:skillsData,
@@ -199,7 +209,7 @@ app.get('/', function(request, response){
 })
 
 
-app.get('/about', function(request, response){
+app.get('/about', function(req, response){
   console.log("SESSION:",req.session)
   const data ={
     skillsData:skillsData,
@@ -319,7 +329,7 @@ db.run(
 
 
 
-app.get('/services', function(request, response){
+app.get('/services', function(req, response){
   console.log("SESSION:",req.session)
   const data ={
     skillsData:skillsData,
@@ -335,7 +345,7 @@ app.get('/services', function(request, response){
 
 
 
-  app.get('/portfolio', function(request, response){
+  app.get('/portfolio', function(req, response){
     console.log("SESSION:",req.session)
     const data ={
       skillsData:skillsData,
@@ -344,9 +354,25 @@ app.get('/services', function(request, response){
     }; 
     db.all("SELECT * FROM portfolio", (error, portfolioData) => {
       if (error) {
-        response.render('portfolio.handlebars', { dbError: true, theError: error.message });
+        const model = {
+          dbError:true,
+          theError:error,
+          portfolio:[],
+          isLoggedIn: req.session.isLoggedIn,
+          name:req.session.username,
+          isAdmin: req.session.isAdmin,
+        }
+        response.render('portfolio.handlebars', { dbError: true, theError: error.message },model);
       } else {
-        response.render('portfolio.handlebars', { dbError: false, portfolio: portfolioData });
+        const model = {
+          dbError:false,
+          theError:"",
+          portfolio: portfolioData,
+          isLoggedIn: req.session.isLoggedIn,
+          name:req.session.username,
+          isAdmin: req.session.isAdmin,
+        }
+        response.render('portfolio.handlebars', { dbError: false, portfolio: portfolioData },model);
       }
     });
   });
@@ -360,6 +386,6 @@ app.listen(port, () => {
     console.log(`Server running and listening on port ${port}...`)
 })
 
-app.get('/login', function(request, response){
+app.get('/login', function(req, response){
   response.render('Login.handlebars'); 
 })
