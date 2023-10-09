@@ -51,7 +51,8 @@ app.post('/login', (req, res) => {
 });
 
 function isValidUser(username,password){
-  return username === 'Qusai22' && password ==='223',username === 'jerome' && password ==='bäst'
+  return username === 'Qusai22' && password ==='223',
+  username === 'jerome' && password ==='bäst'
 
 }
 
@@ -187,12 +188,19 @@ const model = {
 
 
 app.get('/', function(request, response){
+  console.log("SESSION:",req.session)
+  const data ={
+    skillsData:skillsData,
+    experienceData:experienceData,
+    educationData:educationData
+  }; 
   response.render('home.handlebars')
   
 })
 
 
 app.get('/about', function(request, response){
+  console.log("SESSION:",req.session)
   const data ={
     skillsData:skillsData,
     experienceData:experienceData,
@@ -312,6 +320,12 @@ db.run(
 
 
 app.get('/services', function(request, response){
+  console.log("SESSION:",req.session)
+  const data ={
+    skillsData:skillsData,
+    experienceData:experienceData,
+    educationData:educationData
+  }; 
   response.render('services.handlebars', model);
   
   });
@@ -322,6 +336,12 @@ app.get('/services', function(request, response){
 
 
   app.get('/portfolio', function(request, response){
+    console.log("SESSION:",req.session)
+    const data ={
+      skillsData:skillsData,
+      experienceData:experienceData,
+      educationData:educationData
+    }; 
     db.all("SELECT * FROM portfolio", (error, portfolioData) => {
       if (error) {
         response.render('portfolio.handlebars', { dbError: true, theError: error.message });
