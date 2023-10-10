@@ -340,33 +340,121 @@ app.get('/portfolio', (req, res) => {
 });
 //{ dbError: false, portfolio: portfolioData }
 
-app.post('/portfolio/new', (req,res) =>{
-  const {title,description} = req.body;
-  if (req.session.isLoggedIn && req.session.isAdmin){
+app.get('/portfolio/new', (req,res) =>{
+  /*const {title,description} = req.body;*/
+  if (req.session.isLoggedIn && req.session.isAdmin == true){
     console.log("SESSION:", req.session)
     const model = {
       isLoggedIn: req.session.isLoggedIn,
       name:req.session.username,
       isAdmin:req.session.isAdmin
-    }
+    };
+    res.render('new-post.handlebars',model);
+  } else{
+    res.redirect('/login')
+  }
+});
+
+app.post('/portfolio/new', (req,res) => {
+  if (req.session.isLoggedIn && req.session.isAdmin){
+  const {title,description} = req.body;
 
     db.run(
       "INSERT INTO portfolio(pname,pdesc) VALUES(?,?)",
       [title,description],
       (error)=> {
         if(error){
-          console.error("Error inserting data into portfolio table:",error);
-          return res.redirect('/portfolio')
+          const model = {
+            dbError: true,
+            theError: error,
+            isLoggedIn: req.session.isLoggedIn,
+            name: req.session.username,
+            isAdmin: req.session.isAdmin,
+          };
+          res.render('404.handlebars',model);
+        } else{
+          res.redirect('/portfolio');
         }
-
-        console.log("New project added to the portfolio");
-        res.redirect('/portfolio');
       }
     );
   } else {
-    res.redirect('/login')
+      res.redirect('/login');
+    }
+  });
+
+app.get('/portfolio/edit/:id', (req,res)=>{
+  const postID=req.params.id;
+  if (req.session.isLoggedIn && req.session.isAdmin){
+    db.get("SELECT * FROM portfolio WHERE pid=?", [postID], (error, row) => {
+      if (error){
+        const model = {
+          dbError: true,
+          theError: error,
+          isLoggedIn: req.session.isLoggedIn,
+          name: req.session.username,
+          isAdmin: req.session.isAdmin,
+  };
+  res.render('404.handlebars',model);
+} else{
+  const model = {
+    dbError: false,
+    theError: "",
+    post: row,
+    isLoggedIn: req.session.isLoggedIn,
+    name: req.session.username,
+    isAdmin: req.session.isAdmin,
+  };
+  res.render('edit-post.handlebars',model);
   }
 });
+  }else{
+    res.redirect('/login');
+  }
+});
+
+
+app.post('/portfolio/edit/:id', (req,res)=>{
+  const postID = req.params.id;
+  const updatedTitle = req.body.title;
+  const updatedDescription = req.body.description;
+  console.log("SESSION",req.session)
+  const model = {
+    isLoggedIn:req.session.isLoggedIn,
+    name:req.session.username,
+    isAdmin:req.session.isAdmin
+  }
+});
+
+app.get('/portfolio/delete/:id',(req,res) => {
+  const id = req.params.id;
+  if (req.session.isLoggedIn && req.session.isAdmin == true){
+    db.run("DELETE FROM portfolio WHERE pid=?", [id],(error) =>{
+      if (error){
+        const model = {
+          dbError: true, 
+          theError:error,
+          isLoggedIn:req.session.isLoggedIn,
+          name:req.session.username,
+          isAdmin:req.session.isAdmin,
+        };
+        res.render("portfolio.handlebars",model)
+      }else{
+        const model = {
+          dbError:false,
+          theError:"",
+          isLoggedIn:req.session.isLoggedIn,
+          name:req.session.username,
+          isAdmin:req.session.isAdmin,
+
+        };
+        res.render("portfolio.handlebars",model);
+      }
+    });
+    } else {
+      res.redirect('/login')
+    }
+});
+
 
 
    /* portfolio.forEach((oneProject) => {
