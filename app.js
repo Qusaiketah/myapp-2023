@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 const sqlite3 = require('sqlite3')
-const db = new sqlite3.Database('projects-jl3.db')
+const db = new sqlite3.Database('session-db.db')
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
@@ -180,14 +180,14 @@ const model = {
 
 
 
-app.get('/', function (req, response) {
-  console.log("SESSION:", req.session)
+app.get('/', function (request, response) {
+  console.log("SESSION:", request.session)
   const data = {
-    skillsData: skillsData,
-    experienceData: experienceData,
-    educationData: educationData
+    isLoggedIN: request.session.isLoggedIN,
+    name:request.session.username,
+    isAdmin: request.session.isAdmin
   };
-  response.render('home.handlebars')
+  response.render('home.handlebars', model)
 
 })
 
