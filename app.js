@@ -330,8 +330,6 @@ app.get('/portfolio', (req, res) => {
         dbError: false,
         theError: "",
         portfolio: portfolio,
-        isLoggedIn: req.session.isLoggedIn,
-        name: req.session.username,
         isAdmin: req.session.isAdmin,
       }
       res.render('portfolio.handlebars', model);
@@ -356,9 +354,14 @@ app.get('/portfolio/new', (req,res) =>{
 });
 
 app.post('/portfolio/new', (req,res) => {
-  if (req.session.isLoggedIn && req.session.isAdmin){
   const {title,description} = req.body;
-
+  if (req.session.isLoggedIn && req.session.isAdmin) {
+    console.log("SESSION: ", req.session)
+    const model = {
+      isLoggedIn: req.session.isLoggedIn,
+      name: req.session.username,
+      isAdmin: req.session.isAdmin
+    }
     db.run(
       "INSERT INTO portfolio(pname,pdesc) VALUES(?,?)",
       [title,description],
