@@ -524,3 +524,23 @@ sub-title{
    display: block;
 
 }
+
+/*---------------contact me-----------------*/
+.me{
+   padding: 0;
+   margin: 0;
+   box-sizing: border-box;
+   font-family: 'Josefin sans', sans-serif;
+}
+
+section{
+   padding: 40px 15%;
+}
+
+.contact{
+   background: #101010;
+   height: 100%;
+   width: 100%;
+   min-height: 100vh;
+
+}

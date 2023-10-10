@@ -13,7 +13,8 @@ const SQLiteStore = require('connect-sqlite3')(session);
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-const sqlite3 = require('sqlite3')
+const sqlite3 = require('sqlite3');
+const { pid } = require('process');
 const db = new sqlite3.Database('session-db.db')
 
 app.engine('handlebars', engine());
@@ -35,7 +36,7 @@ app.get('/login', function (request, response) {
 });
 
 app.post('/login', (req, res) => {
-  const username = req.body.username;
+  const username = req.body.username || '';
   const password = req.body.password;
 
   if (isValidUser(username, password)) {
@@ -312,7 +313,6 @@ app.get('/services', function (req, response) {
 
 
 app.get('/portfolio', (req, res) => {
-
   db.all("SELECT * FROM portfolio", function (error, portfolio) {
     if (error) {
       console.log("SESSION: ", req.session)
@@ -331,6 +331,9 @@ app.get('/portfolio', (req, res) => {
         theError: "",
         portfolio: portfolio,
         isAdmin: req.session.isAdmin,
+        isLoggedIN: req.session.isAdmin,
+        name: req.session.username
+
       }
       res.render('portfolio.handlebars', model);
     }
@@ -347,7 +350,7 @@ app.get('/portfolio/new', (req,res) =>{
       name:req.session.username,
       isAdmin:req.session.isAdmin
     };
-    res.render('new-post.handlebars',model);
+    res.render('portfolio-new.handlebars',model);
   } else{
     res.redirect('/login')
   }
@@ -363,8 +366,8 @@ app.post('/portfolio/new', (req,res) => {
       isAdmin: req.session.isAdmin
     }
     db.run(
-      "INSERT INTO portfolio(pname,pdesc) VALUES(?,?)",
-      [title,description],
+      "INSERT INTO portfolio(pname,pdesc) VALUES(?,?,?)",
+      [pname,pyear,ptype],
       (error)=> {
         if(error){
           const model = {
@@ -388,31 +391,19 @@ app.post('/portfolio/new', (req,res) => {
 app.get('/portfolio/edit/:id', (req,res)=>{
   const postID=req.params.id;
   if (req.session.isLoggedIn && req.session.isAdmin){
-    db.get("SELECT * FROM portfolio WHERE pid=?", [postID], (error, row) => {
+    db.get("SELECT * FROM portfolio WHERE pid=?", [pid], (error, row) => {
       if (error){
+        console.error('Error fetching post:',error);
+        res.redirect('/portfolio')
+      }else{
         const model = {
-          dbError: true,
-          theError: error,
+          id:pid,
+          post:row,
           isLoggedIn: req.session.isLoggedIn,
           name: req.session.username,
           isAdmin: req.session.isAdmin,
   };
-  res.render('404.handlebars',model);
-} else{
-  const model = {
-    dbError: false,
-    theError: "",
-    post: row,
-    isLoggedIn: req.session.isLoggedIn,
-    name: req.session.username,
-    isAdmin: req.session.isAdmin,
-  };
-  res.render('edit-post.handlebars',model);
-  }
-});
-  }else{
-    res.redirect('/login');
-  }
+  res.render('portfolio-edit.handlebars',model);
 });
 
 
