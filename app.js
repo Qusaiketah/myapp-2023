@@ -1,22 +1,17 @@
-
 const { error } = require('console');
 const express = require('express') // loads the express package
 const { engine } = require('express-handlebars'); // loads handlebars for Express
 const port = 8081 // defines the port
 const app = express() // creates the Express application
-const session = require ('express-session')
-const cookieParser = require ('cookie-parser')
+const session = require('express-session')
+const cookieParser = require('cookie-parser')
 const connectSqlite3 = require('connect-sqlite3');
 app.use(express.urlencoded({ extended: true }));
-const bodyParser = require ('body-parser')
+const bodyParser = require('body-parser')
 const SQLiteStore = require('connect-sqlite3')(session);
 
-app.use(bodyParser.urlencoded({extended:false}))
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-
-
-
-
 
 const sqlite3 = require('sqlite3')
 const db = new sqlite3.Database('projects-jl3.db')
@@ -26,66 +21,53 @@ app.set('view engine', 'handlebars');
 app.set('views', './views');
 app.use(express.static('public'))
 
-
-
 app.use(session({
-  store:new SQLiteStore({db:'session-db.db'}),
-  secret:'thisissecret',
-  saveUninitialized:false,
-  resave:false,
+  store: new SQLiteStore({ db: 'session-db.db' }),
+  secret: 'thisissecret',
+  saveUninitialized: false,
+  resave: false,
 }));
+
 /*-------------------------Login-Logout-TABLE--------------------- */
 
-app.get('/login', function(request, response){
-  response.render('Login.handlebars',model)
+app.get('/login', function (request, response) {
+  response.render('Login.handlebars', model)
 });
 
 app.post('/login', (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
-  
-  if ( isValidUser (username,password)){
-    req.session.isAdmin=true;
+
+  if (isValidUser(username, password)) {
+    req.session.isAdmin = true;
     req.session.isLoggedIN = true;
     req.session.username = username;
-    res.redirect ('/');
+    res.redirect('/');
 
   } else {
     console.log('Wrong username/password, Try again please!')
     req.session.isLoggedIN = false;
-    req.session.isAdmin=false;
+    req.session.isAdmin = false;
     req.session.username = "";
-    res.redirect ('/login');
+    res.redirect('/login');
   }
 
 });
 
-function isValidUser(username,password){
-  return username === 'Qusai22' && password ==='223',
-  username === 'jerome' && password ==='bäst'
+function isValidUser(username, password) {
+  return username === 'Qusai22' && password === '223',
+    username === 'jerome' && password === 'bäst'
 
 }
 
-
-app.get('/Logout',(req,res)=>{
+app.get('/Logout', (req, res) => {
   req.session.isLoggedIN = false;
-    req.session.isAdmin=false;
-    req.session.username = "";
-    res.redirect('/');
-    const model = {}
-    res.render('Logout.handlebars',model);
-  });
-
-
-
-
-
-
-
-
-
-
-
+  req.session.isAdmin = false;
+  req.session.username = "";
+  res.redirect('/');
+  const model = {}
+  res.render('Logout.handlebars', model);
+});
 
 /*-------------------------SKILLS-TABLE--------------------- */
 
@@ -124,31 +106,32 @@ db.run(`CREATE TABLE IF NOT EXISTS Experience (
   ExperienceID INTEGER PRIMARY KEY,
   Year TEXT NOT NULL,
   Company TEXT NOT NULL
-)`, error =>{
-  if(error){
+)`, error => {
+  if (error) {
     console.error("Error creating table")
-  } else{
-  console.log("experience table created")}
+  } else {
+    console.log("experience table created")
+  }
 });
 
 const experienceData = [
-  {Year:"2020", Company:"Scarface Group"}, 
-  {Year:"2021", Company:"Dajjal Interface"}, 
-  {Year:"2022", Company:"Internship at cambridge hell Academy"}, 
+  { Year: "2020", Company: "Scarface Group" },
+  { Year: "2021", Company: "Dajjal Interface" },
+  { Year: "2022", Company: "Internship at cambridge hell Academy" },
 ]
 
 experienceData.forEach((exp) => {
-db.run("INSERT INTO Experience (Year,Company) VALUES(?,?)",
-       [exp.Year,exp.Company], (insertError) =>{
-        if(insertError){
-          console.error("error inserting data inte exp table ")
-        } else {
-          console.log("Data inserted into exp table")
-        }
-       }
-       
-       
-       );
+  db.run("INSERT INTO Experience (Year,Company) VALUES(?,?)",
+    [exp.Year, exp.Company], (insertError) => {
+      if (insertError) {
+        console.error("error inserting data inte exp table ")
+      } else {
+        console.log("Data inserted into exp table")
+      }
+    }
+
+
+  );
 });
 
 
@@ -161,21 +144,21 @@ db.run(`CREATE TABLE IF NOT EXISTS Education (
 )`);
 
 const educationData = [
-  {Year:"2022", Institution:"UI/UX scarface"}, 
-  {Year:"2025", Institution:"MBA at Interface"}, 
-  {Year:"2024", Institution:"BBA at ISM Bangalore"}, 
+  { Year: "2022", Institution: "UI/UX scarface" },
+  { Year: "2025", Institution: "MBA at Interface" },
+  { Year: "2024", Institution: "BBA at ISM Bangalore" },
 ]
 
-educationData.forEach((edu)=>{
-  db.run("INSERT INTO Education(Year,Institution) VALUES(?,?)", 
-  [edu.Year,edu.Institution],
-   (insertError) =>{
-    if(insertError){
-      console.error("error inserting data inte edu table ")
-    } else {
-      console.log("Data inserted into edu table")
-    }
-   });
+educationData.forEach((edu) => {
+  db.run("INSERT INTO Education(Year,Institution) VALUES(?,?)",
+    [edu.Year, edu.Institution],
+    (insertError) => {
+      if (insertError) {
+        console.error("error inserting data inte edu table ")
+      } else {
+        console.log("Data inserted into edu table")
+      }
+    });
 });
 
 
@@ -197,25 +180,25 @@ const model = {
 
 
 
-app.get('/', function(req, response){
-  console.log("SESSION:",req.session)
-  const data ={
-    skillsData:skillsData,
-    experienceData:experienceData,
-    educationData:educationData
-  }; 
+app.get('/', function (req, response) {
+  console.log("SESSION:", req.session)
+  const data = {
+    skillsData: skillsData,
+    experienceData: experienceData,
+    educationData: educationData
+  };
   response.render('home.handlebars')
-  
+
 })
 
 
-app.get('/about', function(req, response){
-  console.log("SESSION:",req.session)
-  const data ={
-    skillsData:skillsData,
-    experienceData:experienceData,
-    educationData:educationData
-  }; 
+app.get('/about', function (req, response) {
+  console.log("SESSION:", req.session)
+  const data = {
+    skillsData: skillsData,
+    experienceData: experienceData,
+    educationData: educationData
+  };
   response.render('about.handlebars', data);
 
 });
@@ -235,11 +218,11 @@ db.run(`CREATE TABLE IF NOT EXISTS WebDesign (
 
 db.run(
   "INSERT INTO WebDesign(Title,Content,Link) VALUES(?,?,?)",
-  [model.webDesignTitle,model.webDesignContent,model.webDesignLink],
+  [model.webDesignTitle, model.webDesignContent, model.webDesignLink],
   (insertError) => {
-    if(insertError){
-      console.error("Error inserting data into WebDesign table;",insertError); 
-    }else{
+    if (insertError) {
+      console.error("Error inserting data into WebDesign table;", insertError);
+    } else {
       console.log("Data inserted into WebDesign table");
     }
   });
@@ -258,11 +241,11 @@ db.run(`CREATE TABLE IF NOT EXISTS UIUXDesign (
 
 db.run(
   "INSERT INTO UIUXDesign(Title,Content,Link) VALUES(?,?,?)",
-  [model.uiUxDesignContent,model.uiUxDesignLink,model.uiUxDesignLink],
+  [model.uiUxDesignContent, model.uiUxDesignLink, model.uiUxDesignLink],
   (insertError) => {
-    if(insertError){
-      console.error("Error inserting data into UIUXDesign table;",insertError); 
-    }else{
+    if (insertError) {
+      console.error("Error inserting data into UIUXDesign table;", insertError);
+    } else {
       console.log("Data inserted into UIUXDesign table");
     }
   });
@@ -279,11 +262,11 @@ db.run(`CREATE TABLE IF NOT EXISTS AppDesign (
 
 db.run(
   "INSERT INTO AppDesign(Title,Content,Link) VALUES(?,?,?)",
-  [model.appDesignTitle,model.appDesignContent,model.appDesignTitle],
+  [model.appDesignTitle, model.appDesignContent, model.appDesignTitle],
   (insertError) => {
-    if(insertError){
-      console.error("Error inserting data into UIUXDesign table;",insertError); 
-    }else{
+    if (insertError) {
+      console.error("Error inserting data into UIUXDesign table;", insertError);
+    } else {
       console.log("Data inserted into UIUXDesign table");
     }
   });
@@ -302,90 +285,136 @@ db.run(`CREATE TABLE IF NOT EXISTS portfolio (
 )`);
 
 const portfolio = [
-  {"pid":"1","name":"Automated Inventory management system","type":"business","desc":"this project aims to streamline inventory","year":2021, "dev":"Node.js","url":"/img/inventory.png" },
-  {"pid":"2","name":"Smart home automation","type":"technology","desc":"this project aims create smart home system","year":2022, "dev":"Node.js","url":"/img/smart_home.png" },
-  {"pid":"3","name":"E-learning platform","type":"education","desc":"this project aims teach new languages","year":2022, "dev":"Node.js","url":"/img/language_learning.png" },
-  {"pid":"4","name":"Medical imaging","type":"business","desc":"this project focusing on smart medical solutions","year":2023, "dev":"Node.js","url":"/img/medical_ai.png" },
-  {"pid":"5","name":"Eco-friendly app","type":"business","desc":"this project focuses on promoting eco friendly systems","year":2023, "dev":"Node.js","url":"/img/ecofriendly_transport.png" },
+  { "pid": "1", "name": "Automated Inventory management system", "type": "business", "desc": "this project aims to streamline inventory", "year": 2021, "dev": "Node.js", "url": "/img/inventory.png" },
+  { "pid": "2", "name": "Smart home automation", "type": "technology", "desc": "this project aims create smart home system", "year": 2022, "dev": "Node.js", "url": "/img/smart_home.png" },
+  { "pid": "3", "name": "E-learning platform", "type": "education", "desc": "this project aims teach new languages", "year": 2022, "dev": "Node.js", "url": "/img/language_learning.png" },
+  { "pid": "4", "name": "Medical imaging", "type": "business", "desc": "this project focusing on smart medical solutions", "year": 2023, "dev": "Node.js", "url": "/img/medical_ai.png" },
+  { "pid": "5", "name": "Eco-friendly app", "type": "business", "desc": "this project focuses on promoting eco friendly systems", "year": 2023, "dev": "Node.js", "url": "/img/ecofriendly_transport.png" },
 
 ];
 
 
-portfolio.forEach( (oneProject) => {
-db.run(
-  "INSERT INTO portfolio(pname,pyear,pdesc,ptype,pimgURL) VALUES(?,?,?,?,?)",[oneProject.name,
-    oneProject.year, oneProject.desc, oneProject.type, oneProject.url], (error) => {
-    if (error) {
-    console.log("ERROR: ", error)
-    } else {
-    console.log("Line added into the portfolio table!")
-  }
-});
-});
+
 
 /*-------------------------portfolio-tables--------------------*/
 
 
-
-
-
-app.get('/services', function(req, response){
-  console.log("SESSION:",req.session)
-  const data ={
-    skillsData:skillsData,
-    experienceData:experienceData,
-    educationData:educationData
-  }; 
+app.get('/services', function (req, response) {
+  console.log("SESSION:", req.session)
+  const data = {
+    skillsData: skillsData,
+    experienceData: experienceData,
+    educationData: educationData
+  };
   response.render('services.handlebars', model);
-  
-  });
-  
+
+});
 
 
+app.get('/portfolio', (req, res) => {
 
-
-
-  app.get('/portfolio', function(req, response){
-    console.log("SESSION:",req.session)
-    const data ={
-      skillsData:skillsData,
-      experienceData:experienceData,
-      educationData:educationData
-    }; 
-    db.all("SELECT * FROM portfolio", (error, portfolioData) => {
-      if (error) {
-        const model = {
-          dbError:true,
-          theError:error,
-          portfolio:[],
-          isLoggedIn: req.session.isLoggedIn,
-          name:req.session.username,
-          isAdmin: req.session.isAdmin,
-        }
-        response.render('portfolio.handlebars', { dbError: true, theError: error.message },model);
-      } else {
-        const model = {
-          dbError:false,
-          theError:"",
-          portfolio: portfolioData,
-          isLoggedIn: req.session.isLoggedIn,
-          name:req.session.username,
-          isAdmin: req.session.isAdmin,
-        }
-        response.render('portfolio.handlebars', { dbError: false, portfolio: portfolioData },model);
+  db.all("SELECT * FROM portfolio", function (error, portfolio) {
+    if (error) {
+      console.log("SESSION: ", req.session)
+      const model = {
+        dbError: true,
+        theError: error,
+        portfolio: [],
+        isLoggedIn: req.session.isLoggedIn,
+        name: req.session.username,
+        isAdmin: req.session.isAdmin,
       }
-    });
+      res.render('portfolio.handlebars', model);
+    } else {
+      const model = {
+        dbError: false,
+        theError: "",
+        portfolio: portfolio,
+        isLoggedIn: req.session.isLoggedIn,
+        name: req.session.username,
+        isAdmin: req.session.isAdmin,
+      }
+      res.render('portfolio.handlebars', model);
+    }
   });
-  
+});
+//{ dbError: false, portfolio: portfolioData }
 
-app.use(function(req,res){
+app.post('/portfolio/new', (req,res) =>{
+  const {title,description} = req.body;
+  if (req.session.isLoggedIn && req.session.isAdmin){
+    console.log("SESSION:", req.session)
+    const model = {
+      isLoggedIn: req.session.isLoggedIn,
+      name:req.session.username,
+      isAdmin:req.session.isAdmin
+    }
+
+    db.run(
+      "INSERT INTO portfolio(pname,pdesc) VALUES(?,?)",
+      [title,description],
+      (error)=> {
+        if(error){
+          console.error("Error inserting data into portfolio table:",error);
+          return res.redirect('/portfolio')
+        }
+
+        console.log("New project added to the portfolio");
+        res.redirect('/portfolio');
+      }
+    );
+  } else {
+    res.redirect('/login')
+  }
+});
+
+
+   /* portfolio.forEach((oneProject) => {
+      db.run(
+        "INSERT INTO portfolio(pname,pyear,pdesc,ptype,pimgURL) VALUES(?,?,?,?,?)", [oneProject.name,
+        oneProject.year, oneProject.desc, oneProject.type, oneProject.url], (error) => {
+          if (error) {
+            const model = {
+              dbError:true,
+              theError:error,
+              isLoggedIn: req.session.isLoggedIn,
+              name:req.session.username,
+              isAdmin:req.session.isAdmin,
+            };
+            console.log("ERROR: ", error)
+          } else {
+
+            console.log("Line added into the portfolio table!")
+            res.redirect('/portfolio');
+          }
+        });
+      } else{
+        res.redirect('/login');
+      
+    
+  }
+  });
+*/
+
+
+
+
+
+
+
+
+
+
+
+/*//////////////////////*/
+app.use(function (req, res) {
   res.status(404).render('404.handlebars');
 });
 
 app.listen(port, () => {
-    console.log(`Server running and listening on port ${port}...`)
+  console.log(`Server running and listening on port ${port}...`)
 })
 
-app.get('/login', function(req, response){
-  response.render('Login.handlebars'); 
+app.get('/login', function (req, response) {
+  response.render('Login.handlebars');
 })
