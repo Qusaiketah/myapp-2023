@@ -527,14 +527,17 @@ sub-title{
 
 /*---------------contact me-----------------*/
 .me{
-   padding: 0;
    margin: 0;
    box-sizing: border-box;
    font-family: 'Josefin sans', sans-serif;
+   justify-content: flex-start;
 }
 
 section{
+   padding: 80px 0;
+   margin-bottom: 50px;
    padding: 40px 15%;
+   justify-content: flex-start;
 }
 
 .contact{
@@ -542,5 +545,71 @@ section{
    height: 100%;
    width: 100%;
    min-height: 100vh;
+   display: grid;
+   grid-template-columns: repeat(2,2fr);
+   grid-gap: 6rem;
+}
+
+.contact-form h1{
+   font-size: 40px;
+   color: #fff;
+   margin-bottom: 21px;
+}
+
+span{
+   color: #ff004f;
 
 }
+
+.contact-form h6{
+   color: #fff;
+   letter-spacing: 1px;
+   line-height: 27px;
+   font-size: 1.12rem;
+   margin-bottom: 3.7rem;
+}
+
+.contact-form form{
+   position: relative;
+   max-width: 500px;
+ 
+}
+
+.contact-form form input,form textarea{
+   width: 100%;
+   padding: 18px;
+   border: none;
+   outline: none;
+   background: #191919;
+   color: #fff;
+   font-size: 1.1rem;
+   margin-bottom: 0.7rem;
+   border-radius: 10px;
+}
+
+.contact-form textarea{
+   resize: none;
+   height: 175px;
+}
+
+.contact-form form .btnn{
+   display: inline-block;
+   background: #ff004f;
+   font-size:1.1rem;
+   letter-spacing: 1px;
+   text-transform: uppercase;
+   font-weight: 600;
+   border: 2px solid transparent;
+   border-radius: 10px;
+   width: 220px;
+   transition: ease .20s;
+   cursor: pointer;
+}
+
+.contact-form form .btnn:hover{
+   border: 2px solid #f9004d;
+   background: transparent;
+   transform: scale(1.05);
+}
+
+/*---------------contact me-----------------*/

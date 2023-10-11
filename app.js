@@ -185,7 +185,7 @@ app.get('/', function (request, response) {
   console.log("SESSION:", request.session)
   const data = {
     isLoggedIN: request.session.isLoggedIN,
-    name:request.session.username,
+    name: request.session.username,
     isAdmin: request.session.isAdmin
   };
   response.render('home.handlebars', model)
@@ -203,6 +203,19 @@ app.get('/about', function (req, response) {
   response.render('about.handlebars', data);
 
 });
+
+app.get('/contact', function (req, response) {
+  console.log("SESSION:", req.session)
+  const data = {
+    name:'Your name',
+    email:'Your Email',
+    subject:'Your subject',
+    massage:'Your massage'
+  };
+  response.render('contact.handlebars', data);
+
+});
+
 
 
 
@@ -341,23 +354,23 @@ app.get('/portfolio', (req, res) => {
 });
 //{ dbError: false, portfolio: portfolioData }
 
-app.get('/portfolio/new', (req,res) =>{
+app.get('/portfolio/new', (req, res) => {
   /*const {title,description} = req.body;*/
-  if (req.session.isLoggedIn && req.session.isAdmin == true){
+  if (req.session.isLoggedIn && req.session.isAdmin == true) {
     console.log("SESSION:", req.session)
     const model = {
       isLoggedIn: req.session.isLoggedIn,
-      name:req.session.username,
-      isAdmin:req.session.isAdmin
+      name: req.session.username,
+      isAdmin: req.session.isAdmin
     };
-    res.render('portfolio-new.handlebars',model);
-  } else{
+    res.render('portfolio-new.handlebars', model);
+  } else {
     res.redirect('/login')
   }
 });
 
-app.post('/portfolio/new', (req,res) => {
-  const {title,description} = req.body;
+app.post('/portfolio/new', (req, res) => {
+  const { title, description } = req.body;
   if (req.session.isLoggedIn && req.session.isAdmin) {
     console.log("SESSION: ", req.session)
     const model = {
@@ -367,9 +380,9 @@ app.post('/portfolio/new', (req,res) => {
     }
     db.run(
       "INSERT INTO portfolio(pname,pdesc) VALUES(?,?,?)",
-      [pname,pyear,ptype],
-      (error)=> {
-        if(error){
+      [pname, pyear, ptype],
+      (error) => {
+        if (error) {
           const model = {
             dbError: true,
             theError: error,
@@ -377,105 +390,110 @@ app.post('/portfolio/new', (req,res) => {
             name: req.session.username,
             isAdmin: req.session.isAdmin,
           };
-          res.render('404.handlebars',model);
-        } else{
+          res.render('404.handlebars', model);
+        } else {
           res.redirect('/portfolio');
         }
       }
     );
   } else {
-      res.redirect('/login');
-    }
-  });
+    res.redirect('/login');
+  }
+});
 
-app.get('/portfolio/edit/:id', (req,res)=>{
-  const postID=req.params.id;
-  if (req.session.isLoggedIn && req.session.isAdmin){
+app.get('/portfolio/edit/:id', (req, res) => {
+  const pid = req.params.id;
+  if (req.session.isLoggedIn && req.session.isAdmin) {
     db.get("SELECT * FROM portfolio WHERE pid=?", [pid], (error, row) => {
-      if (error){
-        console.error('Error fetching post:',error);
+      if (error) {
+        console.error('Error fetching post:', error);
         res.redirect('/portfolio')
-      }else{
+      } else {
         const model = {
-          id:pid,
-          post:row,
+          id: pid,
+          post: row,
           isLoggedIn: req.session.isLoggedIn,
           name: req.session.username,
           isAdmin: req.session.isAdmin,
-  };
-  res.render('portfolio-edit.handlebars',model);
-});
+        }
+      };
+      res.render('portfolio-edit.handlebars', model);
+    }
+    )
+  }
+})
 
-
-app.post('/portfolio/edit/:id', (req,res)=>{
+app.post('/portfolio/edit/:id', (req, res) => {
   const postID = req.params.id;
   const updatedTitle = req.body.title;
   const updatedDescription = req.body.description;
-  console.log("SESSION",req.session)
-  const model = {
-    isLoggedIn:req.session.isLoggedIn,
-    name:req.session.username,
-    isAdmin:req.session.isAdmin
-  }
+  db.run('UPDATE portfolio SET title = ?, description =?, Where id =?', [updatedTitle, updatedDescription, postID], (error) => {
+    if (error) {
+      console.error('Error updating post:', error);
+      res.redirect('/portfolio');
+    } else {
+      res.redirect('/portfolio');
+    }
+  });
 });
 
-app.get('/portfolio/delete/:id',(req,res) => {
+app.get('/portfolio/delete/:id', (req, res) => {
   const id = req.params.id;
-  if (req.session.isLoggedIn && req.session.isAdmin == true){
-    db.run("DELETE FROM portfolio WHERE pid=?", [id],(error) =>{
-      if (error){
+  if (req.session.isLoggedIn && req.session.isAdmin == true) {
+    db.run("DELETE FROM portfolio WHERE id=?", [id], (error,portfolio) => {
+      if (error) {
         const model = {
-          dbError: true, 
-          theError:error,
-          isLoggedIn:req.session.isLoggedIn,
-          name:req.session.username,
-          isAdmin:req.session.isAdmin,
+          dbError: true,
+          theError: error,
+          isLoggedIn: req.session.isLoggedIn,
+          name: req.session.username,
+          isAdmin: req.session.isAdmin,
         };
-        res.render("portfolio.handlebars",model)
-      }else{
+        res.render("/", model)
+      } else {
         const model = {
-          dbError:false,
-          theError:"",
-          isLoggedIn:req.session.isLoggedIn,
-          name:req.session.username,
-          isAdmin:req.session.isAdmin,
+          dbError: false,
+          theError: "",
+          isLoggedIn: req.session.isLoggedIn,
+          name: req.session.username,
+          isAdmin: req.session.isAdmin,
 
         };
-        res.render("portfolio.handlebars",model);
+        res.render("/", model);
       }
     });
-    } else {
-      res.redirect('/login')
-    }
-});
-
-
-
-   /* portfolio.forEach((oneProject) => {
-      db.run(
-        "INSERT INTO portfolio(pname,pyear,pdesc,ptype,pimgURL) VALUES(?,?,?,?,?)", [oneProject.name,
-        oneProject.year, oneProject.desc, oneProject.type, oneProject.url], (error) => {
-          if (error) {
-            const model = {
-              dbError:true,
-              theError:error,
-              isLoggedIn: req.session.isLoggedIn,
-              name:req.session.username,
-              isAdmin:req.session.isAdmin,
-            };
-            console.log("ERROR: ", error)
-          } else {
-
-            console.log("Line added into the portfolio table!")
-            res.redirect('/portfolio');
-          }
-        });
-      } else{
-        res.redirect('/login');
-      
-    
+  } else {
+    res.redirect('/login')
   }
-  });
+});
+/*---------------gjort-----------------*/
+
+
+/* portfolio.forEach((oneProject) => {
+   db.run(
+     "INSERT INTO portfolio(pname,pyear,pdesc,ptype,pimgURL) VALUES(?,?,?,?,?)", [oneProject.name,
+     oneProject.year, oneProject.desc, oneProject.type, oneProject.url], (error) => {
+       if (error) {
+         const model = {
+           dbError:true,
+           theError:error,
+           isLoggedIn: req.session.isLoggedIn,
+           name:req.session.username,
+           isAdmin:req.session.isAdmin,
+         };
+         console.log("ERROR: ", error)
+       } else {
+
+         console.log("Line added into the portfolio table!")
+         res.redirect('/portfolio');
+       }
+     });
+   } else{
+     res.redirect('/login');
+   
+ 
+}
+});
 */
 
 
