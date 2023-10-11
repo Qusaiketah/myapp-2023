@@ -25,11 +25,15 @@
     <input type="text" id="ptype" name="ptype" value="="{{post.ptype}} required>
     <br>
 
+    <label for="pimgurl">Image URL:</label> 
+    <input type="text" id="pimgUrl" name="pimgUrl" value="{{post.pimgUrl}}">
+    <br>
     
-    
-    
-    
+    <input type="submit" value="Modify">
     </form>
-    
+
+    <a href="/portfolio"> Back to Portfolio</a>
+    {{>footer}}
+
 </body>
 </html>
