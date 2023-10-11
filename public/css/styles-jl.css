@@ -526,28 +526,20 @@ sub-title{
 }
 
 /*---------------contact me-----------------*/
-.me{
-   margin: 0;
-   box-sizing: border-box;
-   font-family: 'Josefin sans', sans-serif;
-   justify-content: flex-start;
-}
-
-section{
-   padding: 80px 0;
-   margin-bottom: 50px;
-   padding: 40px 15%;
-   justify-content: flex-start;
-}
-
 .contact{
-   background: #101010;
-   height: 100%;
-   width: 100%;
-   min-height: 100vh;
-   display: grid;
-   grid-template-columns: repeat(2,2fr);
-   grid-gap: 6rem;
+display: flex;
+justify-content: center;
+align-items: center;
+min-height: 100vh;
+padding: 80px 0;
+}
+
+.contact-form{
+   background: transparent;
+   margin-left: -800px;
+   padding: 40px;
+   border-radius: 10px;
+   text-align: left;
 }
 
 .contact-form h1{
@@ -556,17 +548,9 @@ section{
    margin-bottom: 21px;
 }
 
-span{
+h6 span{
    color: #ff004f;
 
-}
-
-.contact-form h6{
-   color: #fff;
-   letter-spacing: 1px;
-   line-height: 27px;
-   font-size: 1.12rem;
-   margin-bottom: 3.7rem;
 }
 
 .contact-form form{
@@ -595,10 +579,9 @@ span{
 .contact-form form .btnn{
    display: inline-block;
    background: #ff004f;
-   font-size:1.1rem;
-   letter-spacing: 1px;
+   font-size:15px;
    text-transform: uppercase;
-   font-weight: 600;
+   font-weight: 500;
    border: 2px solid transparent;
    border-radius: 10px;
    width: 220px;
