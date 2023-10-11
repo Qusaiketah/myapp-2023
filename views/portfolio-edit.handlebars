@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {{>header}}
+    <h1>Edit portfolio Entry</h1>
+    <form method="POST" action="/portfolio/edit/{{id}}">
+    <label for="pname">Name:</label>
+    <input type="text" id="pname" name="pname" value="{{post.pname}}" required>
+    <br>
+
+    <label for="pyear">Year:</label>
+    <input type="text" id="pname" name="name" value="{{post.pyear}}" required>
+    <br>
+
+    <label for="pdesc">Description:</label>
+    <textarea id="pdesc" name="pdesc" required> {{post.pdesc}}</textarea>
+    <br>
+
+    <label for="ptype">Type:</label>
+    <input type="text" id="ptype" name="ptype" value="="{{post.ptype}} required>
+    <br>
+
+    
+    
+    
+    
+    </form>
+    
+</body>
+</html>
