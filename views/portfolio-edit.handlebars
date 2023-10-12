@@ -1,41 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Portfolio Entry</title>
-</head>
-
-<body>
-    {{>header}}
-    <h1>Edit Portfolio Entry</h1>
-    <form method="POST" action="/portfolio/edit/{{id}}">
-        <label for="pname">Name:</label>
-        <input type="text" id="pname" name="pname" value="{{post.pname}}" required>
-        <br>
-
-        <label for="pyear">Year:</label>
-        <input type="text" id="pyear" name="pyear" value="{{post.pyear}}" required>
-        <br>
-
-        <label for="pdesc">Description:</label>
-        <textarea id="pdesc" name="pdesc" required>{{post.pdesc}}</textarea>
-        <br>
-
-        <label for="ptype">Type:</label>
-        <input type="text" id="ptype" name="ptype" value="{{post.ptype}}" required>
-        <br>
-
-        <label for="pimgUrl">Image URL:</label>
-        <input type="text" id="pimgUrl" name="pimgUrl" value="{{post.pimgUrl}}" required>
-        <br>
-
-        <input type="submit" value="Modify">
-    </form>
-
-    <a href="/portfolio">Back to Portfolio</a>
-    {{>footer}}
-</body>
-
-</html>
+<div id="main">
+    <div>
+        <h1>Modify Portfolio</h1>
+        <div>
+            {{#if isLoggedIn}}
+            {{#if isAdmin}}
+            <form action="/portfolio/update/{{portfolio,pid}}" method="post">
+                <fieldset>
+                    <label for="newname">New Name:</label>
+                    <input type="text" name="newname" id="newname" value="{{portfolio.pname}}" required="required">
+                    <br />
+                    <label for="newyear">New Year:</label>
+                    <input type="number" name="newyear" id="newyear" placeholder="2023" value="{{portfolio.pname}}" required="required">
+                    <br />
+                    <textarea name="newdesc" id="newdesc" cols="30" rows="10" required="required">{{portfolio.pdesc}}</textarea>
+                    <br />
+                    <label for="newtype">New Type:</label>
+                    <select name="newtype" id="newtype" required="required">
+                        <option value="Research"{{#if(theTypeR portfolio.ptype)}} selected="selected"{{/if}}>Research</option>
+                        <option value="Education"{{#if(theTypeT portfolio.ptype)}} selected="selected"{{/if}}>Education</option>
+                        <option value="Other"{{#if(theTypeO portfolio.ptype)}} selected="selected"{{/if}}>Other</option>
+                    </select>
+                    <br />
+                    <label for="newimg">New Image URL:</label>
+                    <input type="text" name="newimg" id="newimg" placeholder="/img/"  value="{{portfolio.pimgURL}}" required="required">
+                    <br />
+                </fieldset>
+                <input type="submit" value="Add Portfolio">
+            </form>
+            {{else}}
+            <p>Sorry you are not a Admin</p>
+            {{/if}}
+            {{else}}
+            <p>Sorry you are not logged in! <br />
+                Please go to <a href="/login"></a>
+            </p>
+            {{/if}}
+        </div>
+    </div>
+</div>
