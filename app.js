@@ -329,10 +329,6 @@ db.get("SELECT COUNT(*) AS count FROM portfolio", (error, result) => {
 });
 
 
-
-
-
-
 /*-------------------------portfolio-tables--------------------*/
 
 
@@ -357,7 +353,7 @@ app.get('/portfolio', (req, res) => {
         dbError: true,
         theError: error,
         portfolio: [],
-        isLoggedIn: req.session.isLoggedIn,
+        isLoggedIn: req.session.isLoggedIN,
         name: req.session.username,
         isAdmin: req.session.isAdmin,
       };
@@ -367,7 +363,7 @@ app.get('/portfolio', (req, res) => {
         dbError: false,
         theError: "",
         portfolio: portfolio,
-        isLoggedIn: req.session.isLoggedIn,
+        isLoggedIn: req.session.isLoggedIN,
         name: req.session.username,
         isAdmin: req.session.isAdmin,
       };
@@ -380,7 +376,7 @@ app.get('/portfolio', (req, res) => {
 app.get('/portfolio/new', (req, res) => {
   if (req.session.isLoggedIn && req.session.isAdmin == true) {
     const model = {
-      isLoggedIn: req.session.isLoggedIn,
+      isLoggedIn: req.session.isLoggedIN,
       name: req.session.username,
       isAdmin: req.session.isAdmin,
     };
@@ -404,7 +400,7 @@ app.post('/portfolio/new', (req, res) => {
           const model = {
             dbError: true,
             theError: error,
-            isLoggedIn: req.session.isLoggedIn,
+            isLoggedIn: req.session.isLoggedIN,
             name: req.session.username,
             isAdmin: req.session.isAdmin,
           };
@@ -432,7 +428,7 @@ app.get('/portfolio/edit/:id', (req, res) => {
         const model = {
           id: portfolioID,
           post: row,
-          isLoggedIn: req.session.isLoggedIn,
+          isLoggedIn: req.session.isLoggedIN,
           name: req.session.username,
           isAdmin: req.session.isAdmin,
         };
@@ -475,7 +471,7 @@ app.get('/portfolio/delete/:id', (req, res) => {
         const model = {
           dbError: true,
           theError: error,
-          isLoggedIn: req.session.isLoggedIn,
+          isLoggedIn: req.session.isLoggedIN,
           name: req.session.username,
           isAdmin: req.session.isAdmin,
         };
@@ -484,7 +480,7 @@ app.get('/portfolio/delete/:id', (req, res) => {
         const model = {
           dbError: false,
           theError: "",
-          isLoggedIn: req.session.isLoggedIn,
+          isLoggedIn: req.session.isLoggedIN,
           name: req.session.username,
           isAdmin: req.session.isAdmin,
         };

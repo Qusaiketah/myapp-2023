@@ -1,42 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Portfolio Entry</title>
-</head>
-
-<body>
-    {{>header}}
-    <h1>Add New Portfolio Entry</h1>
-
-    <form method="POST" action="/portfolio/new">
-        <label for="pname">Name:</label>
-        <input type="text" id="pname" name="pname" required>
-        <br>
-
-        <label for="pyear">Year:</label>
-        <input type="text" id="pyear" name="pyear" required>
-        <br>
-
-        <label for="pdesc">Description:</label>
-        <textarea id="pdesc" name="pdesc" required></textarea>
-        <br>
-
-        <label for="ptype">Type:</label>
-        <input type="text" id="ptype" name="ptype" required>
-        <br>
-
-        <label for="pimgUrl">Image URL:</label>
-        <input type="text" id="pimgUrl" name="pimgUrl" required>
-        <br>
-
-        <button type="submit">Submit</button>
-
-    </form>
-    <a href="/portfolio">Back to portfolio</a>
-    {{>footer}}
-</body>
-
-</html>
+<div id="main">
+    <div>
+        <h1>New portfolio</h1>
+        <div>
+            {{#if isLoggedIn}}
+            {{#if isAdmin}}
+            <form action="/portfolio/new" method="post">
+                <fieldset>
+                    <label for="newname">New Name:</label>
+                    <input type="text" name="newname" id="newname" required="required">
+                    <br />
+                    <label for="newyear">New Year:</label>
+                    <input type="number" name="newyear" id="newyear" placeholder="2023" required="required">
+                    <br />
+                    <textarea name="newdesc" id="newdesc" cols="30" rows="10" required="required"></textarea>
+                    <br />
+                    <label for="newtype">New Type:</label>
+                    <select name="newtype" id="newtype" required="required">
+                        <option value="Research">Research</option>
+                        <option value="Education">Education</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <br />
+                    <label for="newimg">New Image URL:</label>
+                    <input type="text" name="newimg" id="newimg" placeholder="/img/" required="required">
+                    <br />
+                </fieldset>
+                <input type="submit" value="Add Portfolio">
+            </form>
+            {{else}}
+            <p>Sorry you are not a Admin</p>
+            {{/if}}
+            {{else}}
+            <p>Sorry you are not logged in! <br />
+                Please go to <a href="/login"></a>
+            </p>
+            {{/if}}
+        </div>
+    </div>
+</div>
