@@ -298,27 +298,34 @@ db.run(`CREATE TABLE IF NOT EXISTS portfolio (
   pimgURL TEXT NOT NULL
 )`);
 
-const portfolio = [
-  { "pid": 1, "pname": "Automated Inventory management system", "pyear": 2021, "pdesc": "this project aims to streamline inventory", "ptype": "business", "pimgURL": "/img/inventory.png" },
-  { "pid": 2, "pname": "Smart home automation", "pyear": 2022, "pdesc": "this project aims to create a smart home system", "ptype": "technology", "pimgURL": "/img/smart_home.png" },
-  { "pid": 3, "pname": "E-learning platform", "pyear": 2022, "pdesc": "this project aims to teach new languages", "ptype": "education", "pimgURL": "/img/language_learning.png" },
-  { "pid": 4, "pname": "Medical imaging", "pyear": 2023, "pdesc": "this project focuses on smart medical solutions", "ptype": "business", "pimgURL": "/img/medical_ai.png" },
-  { "pid": 5, "pname": "Eco-friendly app", "pyear": 2023, "pdesc": "this project focuses on promoting eco-friendly systems", "ptype": "business", "pimgURL": "/img/ecofriendly_transport.png" }
-];
-
-
-portfolio.forEach((portfolio) => {
-  db.run(
-    "INSERT INTO portfolio (pname, pyear, pdesc, ptype, pimgURL) VALUES (?, ?, ?, ?, ?)",
-    [portfolio.pname, portfolio.pyear, portfolio.pdesc, portfolio.ptype, portfolio.pimgURL],
-    (insertError) => {
-      if (insertError) {
-        console.error("Error inserting data into portfolio table:", insertError);
-      } else {
-        console.log("Data inserted into portfolio table");
-      }
+db.get("SELECT COUNT(*) AS count FROM portfolio", (error, result) => {
+  if (error) {
+    console.error("Error checking portfolio table;", error);
+  } else {
+    if (result.count === 0) {
+      const portfolio = [
+        { "pid": 1, "pname": "Automated Inventory management system", "pyear": 2021, "pdesc": "this project aims to streamline inventory", "ptype": "business", "pimgURL": "/img/inventory.png" },
+        { "pid": 2, "pname": "Smart home automation", "pyear": 2022, "pdesc": "this project aims to create a smart home system", "ptype": "technology", "pimgURL": "/img/smart_home.png" },
+        { "pid": 3, "pname": "E-learning platform", "pyear": 2022, "pdesc": "this project aims to teach new languages", "ptype": "education", "pimgURL": "/img/language_learning.png" },
+        { "pid": 4, "pname": "Medical imaging", "pyear": 2023, "pdesc": "this project focuses on smart medical solutions", "ptype": "business", "pimgURL": "/img/medical_ai.png" },
+        { "pid": 5, "pname": "Eco-friendly app", "pyear": 2023, "pdesc": "this project focuses on promoting eco-friendly systems", "ptype": "business", "pimgURL": "/img/ecofriendly_transport.png" }
+      ];
+  
+      portfolio.forEach((portfolio) => {
+        db.run(
+          "INSERT INTO portfolio (pname, pyear, pdesc, ptype, pimgURL) VALUES (?, ?, ?, ?, ?)",
+          [portfolio.pname, portfolio.pyear, portfolio.pdesc, portfolio.ptype, portfolio.pimgURL],
+          (insertError) => {
+            if (insertError) {
+              console.error("Error inserting data into portfolio table:", insertError);
+            } else {
+              console.log("Data inserted into portfolio table");
+            }
+          }
+        );
+      });
     }
-  );
+  }
 });
 
 
