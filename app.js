@@ -292,9 +292,10 @@ db.run(
 db.run(`CREATE TABLE IF NOT EXISTS portfolio (
   pid INTEGER PRIMARY KEY,
   pname TEXT NOT NULL,
-  pyear TEXT NOT NULL,
+  pyear INTEGER NOT NULL,
   pdesc TEXT NOT NULL,
-  ptype TEXT NOT NULL
+  ptype TEXT NOT NULL,
+  pimgURL TEXT NOT NULL
 )`);
 
 const portfolio = [
@@ -319,7 +320,6 @@ portfolio.forEach((portfolio) => {
     }
   );
 });
-
 
 
 
