@@ -353,7 +353,7 @@ app.get('/portfolio', (req, res) => {
         dbError: true,
         theError: error,
         portfolio: [],
-        isLoggedIn: req.session.isLoggedIN,
+        isLoggedIn: req.session.isLoggedIn,
         name: req.session.username,
         isAdmin: req.session.isAdmin,
       };
@@ -363,7 +363,7 @@ app.get('/portfolio', (req, res) => {
         dbError: false,
         theError: "",
         portfolio: portfolio,
-        isLoggedIn: req.session.isLoggedIN,
+        isLoggedIn: req.session.isLoggedIn,
         name: req.session.username,
         isAdmin: req.session.isAdmin,
       };
@@ -374,9 +374,9 @@ app.get('/portfolio', (req, res) => {
 
 // Handle displaying the "Add New Portfolio Entry" form
 app.get('/portfolio/new', (req, res) => {
-  if (req.session.isLoggedIn && req.session.isAdmin == true) {
+  if (req.session.isLoggedIn == true && req.session.isAdmin == true) {
     const model = {
-      isLoggedIn: req.session.isLoggedIN,
+      isLoggedIn: req.session.isLoggedIn,
       name: req.session.username,
       isAdmin: req.session.isAdmin,
     };
@@ -386,13 +386,28 @@ app.get('/portfolio/new', (req, res) => {
   }
 });
 
-// Handle form submission to add a new portfolio entry
+// maybe here brablem !!!!!!Handle form submission to add a new portfolio entry
 app.post('/portfolio/new', (req, res) => {
-  const { pname, pyear, pdesc, ptype, pimgURL } = req.body;
-  if (req.session.isLoggedIn && req.session.isAdmin) {
+  const newsp = [req.body.newname, req.body.newyear, req.body.newdesc, req.body.newtype,
+  req.body.newimg,]
+  if (req.session.isLoggedIn == true && req.session.isAdmin == true) {
     db.run(
       'INSERT INTO portfolio (pname, pyear, pdesc, ptype, pimgURL) VALUES (?, ?, ?, ?, ?)',
-      [pname, parseInt(pyear), pdesc, ptype, pimgURL],  // Ensure pyear is parsed as an integer
+      newsp, (error) => {
+        if (error) {
+          console.log("Error fetching portfolio data:", error)
+        } else {
+          console.log("Data inserted into portfolio table")
+        }
+        res.redirect('/portfolio')
+      })
+  } else {
+    res.redirect('/login')
+  }
+});
+      
+      
+/*      [pname, parseInt(pyear), pdesc, ptype, pimgURL],  // Ensure pyear is parsed as an integer
       function (error) {
         if (error) {
           console.error("Error inserting data into portfolio table: ", error);
@@ -400,7 +415,7 @@ app.post('/portfolio/new', (req, res) => {
           const model = {
             dbError: true,
             theError: error,
-            isLoggedIn: req.session.isLoggedIN,
+            isLoggedIn: req.session.isLoggedIn,
             name: req.session.username,
             isAdmin: req.session.isAdmin,
           };
@@ -413,24 +428,37 @@ app.post('/portfolio/new', (req, res) => {
   } else {
     res.redirect('/login');
   }
-});
+});*/
 
 
-// Handle editing a portfolio entry
+// Handle editing a portfolio entry  // not sure
 app.get('/portfolio/edit/:id', (req, res) => {
   const portfolioID = req.params.id;
-  if (req.session.isLoggedIn && req.session.isAdmin) {
+  if (req.session.isLoggedIn == true && req.session.isAdmin == true) {
     db.get("SELECT * FROM portfolio WHERE pid=?", [portfolioID], (error, row) => {
       if (error) {
-        console.error('Error fetching post:', error);
+        console.error('Error fetching post:', error)
+        const model ={
+          dbError : true,
+          theError: error,
+          portfolio: {},
+          isLoggedIn:req.session.isLoggedIn,
+          name: req.session.username,
+          isAdmin: req.session.isAdmin,
+        }
         res.redirect('/portfolio');
       } else {
         const model = {
-          id: portfolioID,
-          post: row,
+          id: portfolioID,//here too
+          post: row, //maybe here
           isLoggedIn: req.session.isLoggedIN,
           name: req.session.username,
           isAdmin: req.session.isAdmin,
+          helpers:{
+            theTypeR(value) {return value= "Research";},
+            theTypeT(value) {return value= "Teaching";},
+            theTypeO(value) {return value= "Other";},
+          }
         };
         res.render('portfolio-edit.handlebars', model);
       }
@@ -443,20 +471,19 @@ app.get('/portfolio/edit/:id', (req, res) => {
 // Handle updating a portfolio entry
 app.post('/portfolio/edit/:id', (req, res) => {
   const portfolioID = req.params.id;
-  const { pname, pyear, pdesc, ptype, pimgURL } = req.body;
+  const newsp = [req.body.newname, req.body.newyear, req.body.newdesc, req.body.newtype,
+    req.body.newimg,pid,]
   if (req.session.isLoggedIn && req.session.isAdmin) {
     db.run(
       'UPDATE portfolio SET pname = ?, pyear = ?, pdesc = ?, ptype = ?, pimgURL = ? WHERE pid = ?',
-      [pname, pyear, pdesc, ptype, pimgURL, portfolioID],
-      (error) => {
+      newsp, (error) => {
         if (error) {
           console.error('Error updating post:', error);
-          res.redirect('/portfolio');
         } else {
-          res.redirect('/portfolio');
+          console.log("Portfolio Updated")
         }
-      }
-    );
+        res.redirect('/portfolio')
+      });
   } else {
     res.redirect('/login');
   }
@@ -465,17 +492,17 @@ app.post('/portfolio/edit/:id', (req, res) => {
 // Handle deleting a portfolio entry
 app.get('/portfolio/delete/:id', (req, res) => {
   const portfolioID = req.params.id;
-  if (req.session.isLoggedIn && req.session.isAdmin) {
+  if (req.session.isLoggedIn ==true && req.session.isAdmin==true) {
     db.run("DELETE FROM portfolio WHERE pid=?", [portfolioID], (error) => {
       if (error) {
         const model = {
           dbError: true,
           theError: error,
-          isLoggedIn: req.session.isLoggedIN,
+          isLoggedIn: req.session.isLoggedIn,
           name: req.session.username,
           isAdmin: req.session.isAdmin,
         };
-        res.redirect("/portfolio"); // Redirect to the correct route
+        res.render("/portfolio"); // Redirect to the correct route
       } else {
         const model = {
           dbError: false,
@@ -484,7 +511,7 @@ app.get('/portfolio/delete/:id', (req, res) => {
           name: req.session.username,
           isAdmin: req.session.isAdmin,
         };
-        res.redirect('/portfolio'); // Redirect to the correct route
+        res.render('/'); // Redirect to the correct route
       }
     });
   } else {
