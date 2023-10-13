@@ -40,14 +40,14 @@ app.post('/login', (req, res) => {
   const password = req.body.password;
 
   if (isValidUser(username, password)) {
-    req.session.isLoggedIN = true;
+    req.session.isLoggedIn = true;
     req.session.isAdmin = true;
     req.session.username = username;
     res.redirect('/');
 
   } else {
     console.log('Wrong username/password, Try again please!')
-    req.session.isLoggedIN = false;
+    req.session.isLoggedIn = false;
     req.session.isAdmin = false;
     req.session.username = "";
     res.redirect('/login');
@@ -61,7 +61,7 @@ function isValidUser(username, password) {
 }
 
 app.get('/Logout', (req, res) => {
-  req.session.isLoggedIN = false;
+  req.session.isLoggedIn = false;
   req.session.isAdmin = false;
   req.session.username = "";
   res.redirect('/');
@@ -448,10 +448,11 @@ app.get('/portfolio/edit/:id', (req, res) => {
         }
         res.redirect('/portfolio');
       } else {
+        console.log({row})
         const model = {
           id: portfolioID,//here too
-          post: row, //maybe here
-          isLoggedIn: req.session.isLoggedIN,
+          portfolio: row, //maybe here
+          isLoggedIn: req.session.isLoggedIn,
           name: req.session.username,
           isAdmin: req.session.isAdmin,
           helpers:{
@@ -460,6 +461,7 @@ app.get('/portfolio/edit/:id', (req, res) => {
             theTypeO(value) {return value= "Other";},
           }
         };
+        console.log({model})
         res.render('portfolio-edit.handlebars', model);
       }
     });
@@ -472,11 +474,12 @@ app.get('/portfolio/edit/:id', (req, res) => {
 app.post('/portfolio/edit/:id', (req, res) => {
   const portfolioID = req.params.id;
   const newsp = [req.body.newname, req.body.newyear, req.body.newdesc, req.body.newtype,
-    req.body.newimg,pid,]
+    req.body.newimg,portfolioID,]
   if (req.session.isLoggedIn && req.session.isAdmin) {
     db.run(
       'UPDATE portfolio SET pname = ?, pyear = ?, pdesc = ?, ptype = ?, pimgURL = ? WHERE pid = ?',
       newsp, (error) => {
+        console.log({newsp})
         if (error) {
           console.error('Error updating post:', error);
         } else {
@@ -502,16 +505,16 @@ app.get('/portfolio/delete/:id', (req, res) => {
           name: req.session.username,
           isAdmin: req.session.isAdmin,
         };
-        res.render("/portfolio"); // Redirect to the correct route
+        res.redirect("/portfolio"); // Redirect to the correct route
       } else {
         const model = {
           dbError: false,
           theError: "",
-          isLoggedIn: req.session.isLoggedIN,
+          isLoggedIn: req.session.isLoggedIn,
           name: req.session.username,
           isAdmin: req.session.isAdmin,
         };
-        res.render('/'); // Redirect to the correct route
+        res.redirect('/portfolio'); // Redirect to the correct route
       }
     });
   } else {

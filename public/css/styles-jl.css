@@ -34,7 +34,7 @@ body {
    top: 0;
    left: 0;
    width: 100%;
-   height: 100%;  
+   height: 10px;  
    background-size: cover;
    background-repeat: no-repeat;
    z-index: 0;
@@ -595,4 +595,8 @@ h6 span{
    transform: scale(1.05);
 }
 
+.card-title.h3{
+   font-size: 20px;
+   color: #191919;
+}
 /*---------------contact me-----------------*/

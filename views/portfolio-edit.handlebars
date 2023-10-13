@@ -4,7 +4,7 @@
         <div>
             {{#if isLoggedIn}}
             {{#if isAdmin}}
-            <form action="/portfolio/update/{{portfolio,pid}}" method="post">
+            <form action="/portfolio/edit/{{portfolio.pid}}" method="post">
                 <fieldset>
                     <label for="newname">New Name:</label>
                     <input type="text" name="newname" id="newname" value="{{portfolio.pname}}" required="required">
@@ -16,9 +16,9 @@
                     <br />
                     <label for="newtype">New Type:</label>
                     <select name="newtype" id="newtype" required="required">
-                        <option value="Research"{{#if(theTypeR portfolio.ptype)}} selected="selected"{{/if}}>Research</option>
-                        <option value="Education"{{#if(theTypeT portfolio.ptype)}} selected="selected"{{/if}}>Education</option>
-                        <option value="Other"{{#if(theTypeO portfolio.ptype)}} selected="selected"{{/if}}>Other</option>
+                        <option value="Research"{{#theTypeR}}{{ theTypeR portfolio.ptype }} selected="selected"{{/theTypeR}}>Research</option>
+                        <option value="Education"{{#theTypeT}}{{ theTypeT portfolio.ptype }} selected="selected"{{/theTypeT}}>Education</option>
+                        <option value="Other" {{#theTypeR}}{{theTypeO portfolio.ptype}} selected="selected"{{/theTypeR}}>Other</option>
                     </select>
                     <br />
                     <label for="newimg">New Image URL:</label>
