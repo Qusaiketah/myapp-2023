@@ -178,7 +178,10 @@ body {
    padding: 0 35px 0 5px;
 }  
 #btnLogin{
-   width: 150px;
+   padding-left: 50px ;
+   padding-right: 50px;
+   padding-top: 5px ;
+   padding-bottom: 5px;
 }
 
 
@@ -262,7 +265,7 @@ body {
    color: #fff;
    font-weight: 500;
    transition: .5s;
-   margin-left: 480%;
+   margin-left: 720px;
 }
 
 .navbar .btnLogin-popup:hover {

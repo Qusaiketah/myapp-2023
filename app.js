@@ -32,6 +32,11 @@ app.use(session({
 /*-------------------------Login-Logout-TABLE--------------------- */
 
 app.get('/login', function (request, response) {
+  const model = {
+    isLoggedIn: request.session.isLoggedIn,
+    name: request.session.username,
+    isAdmin: request.session.isAdmin
+  };
   response.render('Login.handlebars', model)
 });
 
@@ -40,6 +45,7 @@ app.post('/login', (req, res) => {
   const password = req.body.password;
 
   if (isValidUser(username, password)) {
+    console.log("IS LOGGED IN")
     req.session.isLoggedIn = true;
     req.session.isAdmin = true;
     req.session.username = username;
@@ -56,46 +62,60 @@ app.post('/login', (req, res) => {
 });
 
 function isValidUser(username, password) {
-  return username === 'Qusai22' && password === '223',
+  return username === 'Qusai22' && password === '223' || 
     username === 'jerome' && password === 'bäst'
 }
 
-app.get('/Logout', (req, res) => {
-  req.session.isLoggedIn = false;
-  req.session.isAdmin = false;
-  req.session.username = "";
-  res.redirect('/');
-  const model = {}
-  res.render('Logout.handlebars', model);
+
+
+app.get('/logout', (req, res) => {
+  console.log("SESSION DESTROYED")
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Error destroying session:', err);
+      } else {
+        res.redirect('/');  
+      }
+      
+    });
+  
 });
-
 /*-------------------------SKILLS-TABLE--------------------- */
-
-db.run(`CREATE TABLE IF NOT EXISTS Skills (
-    SkillID INTEGER PRIMARY KEY,
-    SkillName TEXT NOT NULL,
-    SkillDescription TEXT NOT NULL
-)`);
-
 const skillsData = [
   { SkillName: "UI/UX", SkillDescription: "Designing web/app interfaces" },
   { SkillName: "Web Development", SkillDescription: "Developing web applications" },
   { SkillName: "Mobile App Development", SkillDescription: "Building Android/iOS apps" },
+  
 ];
 
-skillsData.forEach((skill) => {
-  db.run(
-    "INSERT INTO Skills (SkillName, SkillDescription) VALUES (?, ?)",
-    [skill.SkillName, skill.SkillDescription],
-    (insertError) => {
-      if (insertError) {
-        console.error("Error inserting data into skills table: ", insertError);
-      } else {
-        console.log("Data inserted into skills table");
-      }
-    }
-  );
+
+db.run(`CREATE TABLE Skills (
+    SkillID INTEGER PRIMARY KEY,
+    SkillName TEXT NOT NULL,
+    SkillDescription TEXT NOT NULL
+)` , (err) => {
+  if (err) {
+    console.log(err)
+  } else {
+    
+    
+    skillsData.forEach((skill) => {
+      db.run(
+        "INSERT INTO Skills (SkillName, SkillDescription) VALUES (?, ?)",
+        [skill.SkillName, skill.SkillDescription],
+        (insertError) => {
+          if (insertError) {
+            console.error("Error inserting data into skills table: ", insertError);
+          } else {
+            console.log("Data inserted into skills table");
+          }
+        }
+      );
+    });
+    
+  }
 });
+
 
 /*-------------------------SKILLS-TABLE--------------------- */
 
@@ -180,14 +200,14 @@ const model = {
 
 
 
-app.get('/', function (request, response) {
-  console.log("SESSION:", request.session)
-  const data = {
-    isLoggedIN: request.session.isLoggedIN,
-    name: request.session.username,
-    isAdmin: request.session.isAdmin
+app.get('/', function (req, res) {
+  console.log("SESSION:", req.session)
+  const model = {
+       isLoggedIn: req.session.isLoggedIn,
+    name: req.session.username,
+    isAdmin: req.session.isAdmin,
   };
-  response.render('home.handlebars', model)
+  res.render('home.handlebars', model)
 
 })
 
@@ -197,7 +217,10 @@ app.get('/about', function (req, response) {
   const data = {
     skillsData: skillsData,
     experienceData: experienceData,
-    educationData: educationData
+    educationData: educationData, 
+    isLoggedIn: req.session.isLoggedIn,
+    name: req.session.username,
+    isAdmin: req.session.isAdmin,
   };
   response.render('about.handlebars', data);
 
@@ -209,7 +232,10 @@ app.get('/contact', function (req, response) {
     name: 'Your name',
     email: 'Your Email',
     subject: 'Your subject',
-    massage: 'Your massage'
+    massage: 'Your massage',
+    isLoggedIn: req.session.isLoggedIn,
+    name: req.session.username,
+    isAdmin: req.session.isAdmin
   };
   response.render('contact.handlebars', data);
 
@@ -335,10 +361,22 @@ db.get("SELECT COUNT(*) AS count FROM portfolio", (error, result) => {
 
 app.get('/services', function (req, response) {
   console.log("SESSION:", req.session)
-  const data = {
+  const model = {
     skillsData: skillsData,
     experienceData: experienceData,
-    educationData: educationData
+    educationData: educationData,
+    isLoggedIn: req.session.isLoggedIn,
+    name: req.session.username,
+    isAdmin: req.session.isAdmin,
+    webDesignTitle: "Web-Design",
+    webDesignContent: "Web design refers to the craft of giving a website a basic graphic design that is usually guided by markup language. This includes determining the sizes and placement of surfaces, typography, color scales, manner or style of images, icons, logos and other graphic elements...",
+    webDesignLink: "https://sv.wikipedia.org/wiki/Webbdesign",
+    uiUxDesignTitle: "UI/UX Design",
+    uiUxDesignContent: "User interface (UI) design or user interface engineering is the design of user interfaces for machines and software, such as computers, home appliances, mobile devices, and other electronic devices, with the focus on maximizing usability and the user experience...",
+    uiUxDesignLink: "https://en.wikipedia.org/wiki/User_interface_design",
+    appDesignTitle: "App Design",
+    appDesignContent: "Mobile app development is the act or process by which a mobile app is developed for one or more mobile devices, which can include personal digital assistants (PDA), enterprise digital assistants (EDA), or mobile phones.[1] Such software applications are specifically designed to run on mobile devices, taking numerous hardware constraints into consideration...",
+    appDesignLink: "https://en.wikipedia.org/wiki/Mobile_app_development"
   };
   response.render('services.handlebars', model);
 
@@ -575,6 +613,12 @@ app.get('/portfolio/delete/:id', (req, res) => {
 });
 */
 
+
+app.get('/login', function (req, response) {
+  response.render('Login.handlebars');
+})
+
+
 /*//////////////////////*/
 app.use(function (req, res) {
   res.status(404).render('404.handlebars');
@@ -582,9 +626,5 @@ app.use(function (req, res) {
 
 app.listen(port, () => {
   console.log(`Server running and listening on port ${port}...`)
-})
-
-app.get('/login', function (req, response) {
-  response.render('Login.handlebars');
 })
 
