@@ -1,6 +1,9 @@
 <div id="main">
     <div class="container">
         <h1>My projects</h1>
+        {{#if isAdmin}}
+         <a href="/portfolio/new">New project</a>
+         {{/if}}
         <div class="columns col-gapless">
             {{#if dbError}}
             <div>
@@ -22,6 +25,9 @@
                                 class="important">Delete</a>
                         </div>
                         {{/if}}
+                        <div>
+                            <a href="/portfolio/about/{{pid}}">More Info</a>
+                        </div>
                     </div>
                 </div>
             </div>

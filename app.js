@@ -469,6 +469,54 @@ app.post('/portfolio/new', (req, res) => {
 });*/
 
 
+
+// Handle displaying the "Add New Portfolio Entry" form
+app.get('/portfolio/new', (req, res) => {
+  const portfolioID = req.params.id;
+  if (req.session.isLoggedIn === true && req.session.isAdmin === true) {
+    const model = {
+      isLoggedIn: req.session.isLoggedIn,
+      name: req.session.username,
+      isAdmin: req.session.isAdmin,
+    };
+    res.render('portfolio-new.handlebars', model);
+  } else {
+    res.redirect('/login');
+  }
+});
+
+// Handle form submission to add a new portfolio entry
+app.post('/portfolio/new', (req, res) => {
+  if (req.session.isLoggedIn === true && req.session.isAdmin === true) {
+    const { newname, newyear, newdesc, newtype, newimg } = req.body;
+    const newsp = [newname, newyear, newdesc, newtype, newimg];
+
+    db.run(
+      'INSERT INTO portfolio (pname, pyear, pdesc, ptype, pimgURL) VALUES (?, ?, ?, ?, ?)',
+      newsp,
+      (error) => {
+        if (error) {
+          console.error('Error inserting data into portfolio table:', error);
+        } else {
+          console.log('Data inserted into portfolio table');
+        }
+        res.redirect('/portfolio');
+      }
+    );
+  } else {
+    res.redirect('/login');
+  }
+});
+
+
+
+
+
+
+
+
+
+
 // Handle editing a portfolio entry  // not sure
 app.get('/portfolio/edit/:id', (req, res) => {
   const portfolioID = req.params.id;
@@ -559,6 +607,40 @@ app.get('/portfolio/delete/:id', (req, res) => {
     res.redirect('/login');
   }
 });
+
+app.get ('/portfolio/about/:id', (req,res)=>{
+  const portfolioID = req.params.id
+
+  db.get ( "SELECT * FROM portfolio WHERE pid = ?", portfolioID,
+  function(error,portfolio){
+    if( error) {
+      const model = {
+        dbError: true, 
+        theError: error,
+        portfolio:null,
+        isLoggedIn: req.session.isLoggedIn,
+        name: req.session.username,
+        isAdmin: req.session.isAdmin
+      }
+      res.render("404.handlebars",model);
+    } else {
+      const model = {
+        dbError: false, 
+        theError: "",
+        portfolio:portfolio,
+        isLoggedIn: req.session.isLoggedIn,
+        name: req.session.username,
+        isAdmin: req.session.isAdmin
+    }
+    res.render("portfolio-about.handlebars", model);
+    }
+  });
+});
+
+
+
+
+
 
 /*db.run('DROP TABLE IF EXISTS portfolio', (dropError) => {
   if (dropError) {

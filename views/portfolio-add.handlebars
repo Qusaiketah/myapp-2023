@@ -1,0 +1,40 @@
+<div id="main">
+    <div>
+        <h1>Add new portfolio Entry</h1>
+        <div>
+            {{#if isLoggedIn}}
+                {{#if isAdmin}}
+                    <form action="/portfolio/add" method="post">
+                        <fieldset>
+                            <label for="newname">Name:</label>
+                            <input type="text" name="newname" id="newname" placeholder="Enter Name" required="required">
+                            <br />
+                            <label for="newyear">Year:</label>
+                            <input type="text" name="newyear" id="newyear" placeholder="Enter Year" required="required">
+                            <br />
+                            <label for="newdesc"> Description:</label>
+                            <textarea name="newdesc" id="newdesc" cols="30" rows="10" required="required"></textarea>
+                            <br />
+                            <label for="newtype">Type:</label>
+                            <select name="newtype" id="newtype" required="required">
+                                <option value="Research">Research</option>
+                                <option value="Education">Education</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <br />
+                            <label for "newimg"> Image URL:</label>
+                            <input type="text" name="newimg" id="newimg" placeholder="Enter Image URL" required="required">
+                            <br />
+                        </fieldset>
+                        <input type="submit" value="Add portfolio">
+                    </form>
+                {{else}}
+                    <p>Sorry, you are not an Admin.</p>
+                {{/if}}
+            {{else}}
+                <p>Sorry, you are not logged in! <br />
+                Please go to <a href="/login"> Login</a></p>
+            {{/if}}
+        </div>
+    </div>
+</div>
