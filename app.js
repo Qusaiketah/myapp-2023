@@ -169,6 +169,8 @@ const experienceData = [
   { Year: "2020", Company: "Scarface Group" },
   { Year: "2021", Company: "Dajjal Interface" },
   { Year: "2022", Company: "Internship at cambridge hell Academy" },
+  { Year: "1999", Company: "Jönköping university" },
+  { Year: "2002", Company: "jeroms internship" },
 ]
 
 experienceData.forEach((exp) => {
@@ -198,6 +200,8 @@ const educationData = [
   { Year: "2022", Institution: "UI/UX scarface" },
   { Year: "2025", Institution: "MBA at Interface" },
   { Year: "2024", Institution: "BBA at ISM Bangalore" },
+  { Year: "2005", Institution: "MVC Directed" },
+  { Year: "2011", Institution: "Usa security larm" },
 ]
 
 educationData.forEach((edu) => {
