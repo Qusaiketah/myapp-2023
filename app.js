@@ -9,6 +9,7 @@ const connectSqlite3 = require('connect-sqlite3');
 app.use(express.urlencoded({ extended: true }));
 const bodyParser = require('body-parser')
 const SQLiteStore = require('connect-sqlite3')(session);
+const bcrypt = require('bcrypt');
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
@@ -31,42 +32,70 @@ app.use(session({
 
 /*-------------------------Login-Logout-TABLE--------------------- */
 
-app.get('/login', function (request, response) {
-  const model = {
-    isLoggedIn: request.session.isLoggedIn,
-    name: request.session.username,
-    isAdmin: request.session.isAdmin
-  };
-  response.render('Login.handlebars', model)
-});
 
-app.post('/login', (req, res) => {
-  const username = req.body.username || '';
-  const password = req.body.password;
 
-  if (isValidUser(username, password)) {
-    console.log("IS LOGGED IN")
-    req.session.isLoggedIn = true;
-    req.session.isAdmin = true;
-    req.session.username = username;
-    res.redirect('/');
-
+db.run(`CREATE TABLE IF NOT EXISTS "login" (
+  "id" INTEGER PRIMARY KEY,
+  "username" TEXT NOT NULL,
+  "password" TEXT NOT NULL
+)`, (error) => {
+  if (error) {
+    console.log("ERROR: ", error);
   } else {
-    console.log('Wrong username/password, Try again please!')
-    req.session.isLoggedIn = false;
-    req.session.isAdmin = false;
-    req.session.username = "";
-    res.redirect('/login');
-  }
+    console.log("---> Table login created!");
 
+    const login = [
+      { "id": "0001", "username": "Qusai22", "password": "223" },
+      { "id": "0002", "username": "elvis", "password": "1233" },
+      { "id": "0003", "username": "jerome", "password": "bestieteacheri" },
+      { "id": "0004", "username": "webdev", "password": "webdesc" },
+      { "id": "0005", "username": "university", "password": "jonkoping" },
+    ];
+
+    login.forEach((oneLogin) => {
+      const hash = bcrypt.hashSync(oneLogin.password, 10);
+      db.run("INSERT OR IGNORE INTO login (username, password) VALUES (?, ?)", [oneLogin.username, hash], (error) => {
+        if (error) {
+          console.log("ERROR: ", error);
+        } else {
+          console.log("Line added into the login table!");
+        }
+      });
+    });
+  }
 });
 
-function isValidUser(username, password) {
-  return username === 'Qusai22' && password === '223' || 
-    username === 'jerome' && password === 'bäst'
-}
 
+// ... (other app configuration and routes)
 
+// POST request for login
+app.post('/login', (req, res) => {
+  const un = req.body.un;
+  const pw = req.body.pw;
+
+  // Fetch the user from the database and compare passwords
+  db.get('SELECT * FROM login WHERE username = ?', [un], (error, user) => {
+    if (error) {
+      console.error('Error querying database:', error);
+      return res.status(500).send('Server Error');
+    }
+
+    if (user && bcrypt.compareSync(pw, user.password)) {
+      console.log(`${user.username} is logged in!`);
+
+      req.session.isAdmin = true;
+      req.session.isLoggedIn = true;
+      req.session.name = user.username;
+      res.redirect('/');
+    } else {
+      console.log('Bad user and/or bad password');
+      req.session.isAdmin = false;
+      req.session.isLoggedIn = false;
+      req.session.name = '';
+      res.redirect('/login');
+    }
+  });
+});
 
 app.get('/logout', (req, res) => {
   console.log("SESSION DESTROYED")
@@ -85,11 +114,13 @@ const skillsData = [
   { SkillName: "UI/UX", SkillDescription: "Designing web/app interfaces" },
   { SkillName: "Web Development", SkillDescription: "Developing web applications" },
   { SkillName: "Mobile App Development", SkillDescription: "Building Android/iOS apps" },
+  { SkillName: "software Development", SkillDescription: "Developing software" },
+  { SkillName: "Styling", SkillDescription: "Styling Android/iOS apps" },
   
 ];
 
 
-db.run(`CREATE TABLE Skills (
+db.run(`CREATE TABLE IF NOT EXISTS "Skills" (
     SkillID INTEGER PRIMARY KEY,
     SkillName TEXT NOT NULL,
     SkillDescription TEXT NOT NULL
